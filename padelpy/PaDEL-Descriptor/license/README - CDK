@@ -1,0 +1,117 @@
+CDK The Chemical Development Kit
+ 
+Copyright 1997-2007 The CDK Development Team
+License: LGPL, see doc/lgpl.license
+
+1. Introduction
+
+You are currently reading the README file for the Chemistry Development Project (CDK).
+This project is hosted under http://cdk.sourceforge.net
+Please refer to these pages for updated information and the latest version of the CDK.
+
+The CDK is an open-source library of algorithms for structural chemo- and bioinformatics, implemented in 
+the programming language Java(tm). The library is published under terms of the the 
+GNU Lesser General Public License. This has implications on what you can do with sources and
+binaries of the CDK library. For details, please refer to the file LICENSE, which should have been
+provided with this distribution.
+
+PLEASE NOTE: This is a library of useful data structures and algorithms to manipulated them 
+from the area of structural chemo- and bioinformatics. As such, it is intended for the use by
+programmers, who wish to save some effort by reusing code. It is not intended for the enduser. 
+If you consider yourself to be more like user, you might not find what you wanted. 
+Please refer to other projects like the JChemPaint project (http://jchempaint.sourceforge.net)
+or the Jmol project (http://jmol.sourceforge.net) for programs that actually take advantage of the 
+CDK library.
+
+2. Compiling
+
+Compiling and jar-ing the software is done with Jakarta's 
+Ant (http://jakarta.apache.org/ant/) and requires Java 1.5.0 or better:
+
+cdk/$ ls build.xml
+build.xml
+cdk/$ ant 
+
+"ant -p" gives a list of possible compilation targets. The default target is 'dist-all', which
+creates a number of .jar files in the 'dist' directory corresponding to subsets of the CDK
+functionality. For convenience, one large .jar file containing everything can be created using the
+target 'dist-large' (using the command "ant dist-large"). This is also created in dist/jar and is
+typically named something like 'cdk-cvs-20060303.jar'.
+
+2.1 Creating the JavaDoc documentation for the API
+
+The JavaDoc documentation for the API describes all of the CDK classes in detail. It functions as
+the user manual for the CDK, although you should also look at the list of examples and tutorials
+below. This documentation is created by 'ant' from the Java source code for the CDK as follows:
+
+cdk/$ ls javadoc.xml
+javadoc.xml
+cdk/$ ant -buildfile javadoc.xml
+
+The documenation is created as a series of .html pages in doc/api. If you use firefox, you can read
+the documentation using the following command:
+
+cdk/$ firefox doc/api/index.html
+
+3. Running tests
+
+After you compiled the code, you can do "ant test-all" to run the test suite of non-interactive, automated
+tests. You might need to copy an appropriate junit.jar into your $ANT_HOME/lib
+directory or somewhere else in your classpath.
+Upon "ant dist-all test-dist-all test-all", you should see something like:
+
+test:
+Running org.openscience.cdk.test.CDKTests
+Tests run: 1065, Failures: 7, Errors: 1, Time elapsed: 27,55 sec
+
+As you can see, the vast majority of tests ran successfully, but that there
+are failures and errors. The $CDK_HOME/reports/results.txt file contains
+information about the outcome of the tests. Some tests might fail intentionally
+to mark know issues in CDK.
+
+There are also run interactive tests, like the Controller2DTest. In order to try them, you can edit the "run"
+target in the build.xml file to look like this:
+
+	<target name="run" depends="dist">
+		<java classname="org.openscience.cdk.test.ControllerTest" fork="yes">
+			<arg value=""/>
+			<classpath>
+				<pathelement location="${dist}/jar/cdk.jar"/>
+				<pathelement path="${java.class.path}"/>
+				<pathelement location="."/>
+				<fileset dir="jar">
+				<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</java>  
+	</target>
+
+Then, a "ant run" should give you a window where you can add bonds to a given structure.
+Currently, there are more than 2500 test, of which a large part tests the data, datadebug and 
+nonotify classes.
+
+4. Using CDK
+
+CDK is a class library intended to be used by other programs. It will not run 
+as a stand-alone program, although it contains some GUI- and command
+line applications. In order to use the CDK in your program, you need to build
+the distribution jars by running "ant dist-all". They will end up in
+$CDK_HOME/dist/jar. Copy all cdk-*.jars as well as all jars from $CDK_HOME/jar
+to the lib directory of the project for which you intend to have CDK support and
+use them as you would use any other third party jar.
+
+Alternatively, run "ant dist-large" to create a jar cdk-svn-YYYYMMDD.jar in
+$CDK_HOME/dist/jar. This large jar contains all the CDK code and all third
+party libraries that code depends on. 
+
+5. Examples and tutorials
+
+To get started using the CDK, you may be interested in the following websites which contain
+examples and tutorials:
+* http://www.chemistry-development-kit.org
+* http://blue.chem.psu.edu/~rajarshi/code/java
+* http://www.redbrick.dcu.ie/~noel/CDKJython.html
+
+Further examples can also be found in issues of the CDK News:
+* http://cdknews.org/
+
