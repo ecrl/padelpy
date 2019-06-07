@@ -20,7 +20,7 @@ from padelpy import padeldescriptor
 
 
 def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
-                fingerprints: bool=False) -> OrderedDict:
+                fingerprints: bool=False, timeout: int=15) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -28,6 +28,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
         output_csv (str): if supplied, saves descriptors to this CSV file
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
+        timeout (int): maximum time, in seconds, for conversion
 
     Returns:
         OrderedDict: descriptors/fingerprint labels and values
@@ -53,7 +54,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
             d_2d=descriptors,
             d_3d=descriptors,
             fingerprints=fingerprints,
-            maxruntime=10000
+            maxruntime=1000*timeout
         )
     except RuntimeError as exception:
         remove('{}.smi'.format(timestamp))
@@ -75,7 +76,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
 
 
 def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
-             fingerprints: bool=False) -> list:
+             fingerprints: bool=False, timeout: int=15) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -84,6 +85,7 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
         output_csv (str): if supplied, saves descriptors/fingerprints here
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
+        timeout (int): maximum time, in seconds, for conversion
 
     Returns:
         list: list of dicts, where each dict corresponds sequentially to a
@@ -113,7 +115,7 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
             d_2d=descriptors,
             d_3d=descriptors,
             fingerprints=fingerprints,
-            maxruntime=10000
+            maxruntime=1000*timeout
         )
     except RuntimeError as exception:
         if not save_csv:
