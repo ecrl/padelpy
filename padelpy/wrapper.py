@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/wrapper.py
-# v.0.1.0
+# v.0.1.1
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains the `padeldescriptor` function, a wrapper for PaDEL-Descriptor
