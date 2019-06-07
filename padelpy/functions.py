@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.1
+# v.0.1.2
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -44,16 +44,22 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
         save_csv = False
         output_csv = '{}.csv'.format(timestamp)
 
-    padeldescriptor(
-        mol_dir='{}.smi'.format(timestamp),
-        d_file=output_csv,
-        convert3d=True,
-        retain3d=True,
-        d_2d=descriptors,
-        d_3d=descriptors,
-        fingerprints=fingerprints,
-        maxruntime=10000
-    )
+    try:
+        padeldescriptor(
+            mol_dir='{}.smi'.format(timestamp),
+            d_file=output_csv,
+            convert3d=True,
+            retain3d=True,
+            d_2d=descriptors,
+            d_3d=descriptors,
+            fingerprints=fingerprints,
+            maxruntime=10000
+        )
+    except RuntimeError as exception:
+        remove('{}.smi'.format(timestamp))
+        if not save_csv:
+            remove(output_csv)
+        raise RuntimeError(exception)
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
         reader = DictReader(desc_file)
@@ -97,17 +103,22 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
             datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
         )
 
-    padeldescriptor(
-        mol_dir=mdl_file,
-        d_file=output_csv,
-        convert3d=True,
-        retain3d=True,
-        retainorder=True,
-        d_2d=descriptors,
-        d_3d=descriptors,
-        fingerprints=fingerprints,
-        maxruntime=10000
-    )
+    try:
+        padeldescriptor(
+            mol_dir=mdl_file,
+            d_file=output_csv,
+            convert3d=True,
+            retain3d=True,
+            retainorder=True,
+            d_2d=descriptors,
+            d_3d=descriptors,
+            fingerprints=fingerprints,
+            maxruntime=10000
+        )
+    except RuntimeError as exception:
+        if not save_csv:
+            remove(output_csv)
+        raise RuntimeError(exception)
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
         reader = DictReader(desc_file)
