@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.0
+# v.0.1.1
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -51,7 +51,8 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
         retain3d=True,
         d_2d=descriptors,
         d_3d=descriptors,
-        fingerprints=fingerprints
+        fingerprints=fingerprints,
+        maxruntime=10000
     )
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
@@ -104,7 +105,8 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
         retainorder=True,
         d_2d=descriptors,
         d_3d=descriptors,
-        fingerprints=fingerprints
+        fingerprints=fingerprints,
+        maxruntime=10000
     )
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
