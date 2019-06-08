@@ -121,6 +121,6 @@ def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
     _, err = p.communicate()
     if err != b'':
         raise RuntimeError('PaDEL-Descriptor encountered an error: {}'.format(
-            err
+            err.decode('utf-8')
         ))
     return
