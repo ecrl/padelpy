@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.2
+# v.0.1.3
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -20,7 +20,7 @@ from padelpy import padeldescriptor
 
 
 def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
-                fingerprints: bool=False) -> OrderedDict:
+                fingerprints: bool=False, timeout: int=4) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -28,6 +28,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
         output_csv (str): if supplied, saves descriptors to this CSV file
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
+        timeout (int): maximum time, in seconds, for conversion
 
     Returns:
         OrderedDict: descriptors/fingerprint labels and values
@@ -44,22 +45,26 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
         save_csv = False
         output_csv = '{}.csv'.format(timestamp)
 
-    try:
-        padeldescriptor(
-            mol_dir='{}.smi'.format(timestamp),
-            d_file=output_csv,
-            convert3d=True,
-            retain3d=True,
-            d_2d=descriptors,
-            d_3d=descriptors,
-            fingerprints=fingerprints,
-            maxruntime=10000
-        )
-    except RuntimeError as exception:
-        remove('{}.smi'.format(timestamp))
-        if not save_csv:
-            remove(output_csv)
-        raise RuntimeError(exception)
+    for attempt in range(3):
+        try:
+            padeldescriptor(
+                mol_dir='{}.smi'.format(timestamp),
+                d_file=output_csv,
+                convert3d=True,
+                retain3d=True,
+                d_2d=descriptors,
+                d_3d=descriptors,
+                fingerprints=fingerprints,
+                maxruntime=1000*timeout
+            )
+        except RuntimeError as exception:
+            if attempt == 2:
+                remove('{}.smi'.format(timestamp))
+                if not save_csv:
+                    remove(output_csv)
+                raise RuntimeError(exception)
+            else:
+                continue
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
         reader = DictReader(desc_file)
@@ -75,7 +80,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
 
 
 def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
-             fingerprints: bool=False) -> list:
+             fingerprints: bool=False, timeout: int=4) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -84,6 +89,7 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
         output_csv (str): if supplied, saves descriptors/fingerprints here
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
+        timeout (int): maximum time, in seconds, for conversion
 
     Returns:
         list: list of dicts, where each dict corresponds sequentially to a
@@ -103,22 +109,26 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
             datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
         )
 
-    try:
-        padeldescriptor(
-            mol_dir=mdl_file,
-            d_file=output_csv,
-            convert3d=True,
-            retain3d=True,
-            retainorder=True,
-            d_2d=descriptors,
-            d_3d=descriptors,
-            fingerprints=fingerprints,
-            maxruntime=10000
-        )
-    except RuntimeError as exception:
-        if not save_csv:
-            remove(output_csv)
-        raise RuntimeError(exception)
+    for attempt in range(3):
+        try:
+            padeldescriptor(
+                mol_dir=mdl_file,
+                d_file=output_csv,
+                convert3d=True,
+                retain3d=True,
+                retainorder=True,
+                d_2d=descriptors,
+                d_3d=descriptors,
+                fingerprints=fingerprints,
+                maxruntime=1000*timeout
+            )
+        except RuntimeError as exception:
+            if attempt == 2:
+                if not save_csv:
+                    remove(output_csv)
+                raise RuntimeError(exception)
+            else:
+                continue
 
     with open(output_csv, 'r', encoding='utf-8') as desc_file:
         reader = DictReader(desc_file)
