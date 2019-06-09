@@ -117,7 +117,7 @@ def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
     if usefilenameasmolname is True:
         command += ' -usefilenameasmolname'
 
-    p = Popen(command, stdout=PIPE, stderr=PIPE)
+    p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
     _, err = p.communicate()
     if err != b'':
         raise RuntimeError('PaDEL-Descriptor encountered an error: {}'.format(
