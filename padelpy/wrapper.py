@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/wrapper.py
-# v.0.1.3
+# v.0.1.4
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains the `padeldescriptor` function, a wrapper for PaDEL-Descriptor
@@ -117,7 +117,7 @@ def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
     if usefilenameasmolname is True:
         command += ' -usefilenameasmolname'
 
-    p = Popen(command, stdout=PIPE, stderr=PIPE)
+    p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
     _, err = p.communicate()
     if err != b'':
         raise RuntimeError('PaDEL-Descriptor encountered an error: {}'.format(
