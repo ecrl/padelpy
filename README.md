@@ -5,6 +5,7 @@
 [![GitHub version](https://badge.fury.io/gh/ecrl%2Fpadelpy.svg)](https://badge.fury.io/gh/ecrl%2Fpadelpy)
 [![PyPI version](https://badge.fury.io/py/padelpy.svg)](https://badge.fury.io/py/padelpy)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ecrl/padelpy/master/LICENSE.txt)
+[![Build Status](https://dev.azure.com/travisjkessler/uml.ecrl/_apis/build/status/ECRL.PaDELPy?branchName=master)](https://dev.azure.com/travisjkessler/uml.ecrl/_build/latest?definitionId=2&branchName=master)
 
 PaDELPy provides a Python wrapper for the [PaDEL-Descriptor](http://www.yapcwsoft.com/dd/padeldescriptor/) molecular descriptor calculation software. It was created to allow direct access to the PaDEL-Descriptor command-line interface via Python.
 
