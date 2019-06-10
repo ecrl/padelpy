@@ -57,6 +57,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
                 fingerprints=fingerprints,
                 maxruntime=1000*timeout
             )
+            break
         except RuntimeError as exception:
             if attempt == 2:
                 remove('{}.smi'.format(timestamp))
@@ -122,6 +123,7 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
                 fingerprints=fingerprints,
                 maxruntime=1000*timeout
             )
+            break
         except RuntimeError as exception:
             if attempt == 2:
                 if not save_csv:
