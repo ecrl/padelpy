@@ -12,6 +12,7 @@
 from os.path import abspath, dirname, join
 from shutil import which
 from subprocess import PIPE, Popen
+from time import sleep
 
 # PaDEL-Descriptor is packaged with PaDELPy
 _PADEL_PATH = join(
@@ -19,6 +20,29 @@ _PADEL_PATH = join(
     'PaDEL-Descriptor',
     'PaDEL-Descriptor.jar'
 )
+
+
+def _popen_timeout(command: str, timeout: int) -> tuple:
+    ''' Calls PaDEL-Descriptor, with optional subprocess timeout
+
+    Args:
+        command (str): command to execute via subprocess.Popen
+        timeout (int): if not None, times out after this many seconds
+
+    Returns:
+        tuple: (stdout of process, stderr of process)
+    '''
+
+    p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
+    if timeout is not None:
+        for t in range(timeout):
+            sleep(1)
+            if p.poll() is not None:
+                return p.communicate()
+        p.kill()
+        return (-1, b'PaDEL-Descriptor timed out during subprocess call')
+    else:
+        return p.communicate()
 
 
 def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
@@ -30,7 +54,8 @@ def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
                     removesalt: bool=False, retain3d: bool=False,
                     retainorder: bool=False, standardizenitro: bool=False,
                     standardizetautomers: bool=False, tautomerlist: str=None,
-                    usefilenameasmolname: bool=False) -> None:
+                    usefilenameasmolname: bool=False,
+                    sp_timeout: int=None) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 
@@ -117,8 +142,7 @@ def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
     if usefilenameasmolname is True:
         command += ' -usefilenameasmolname'
 
-    p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
-    _, err = p.communicate()
+    _, err = _popen_timeout(command, sp_timeout)
     if err != b'':
         raise RuntimeError('PaDEL-Descriptor encountered an error: {}'.format(
             err.decode('utf-8')
