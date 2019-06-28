@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.5
+# v.0.1.6
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -14,13 +14,14 @@ from csv import DictReader
 from datetime import datetime
 from os import remove
 from re import compile, IGNORECASE
+from time import sleep
 
 # PaDELPy imports
 from padelpy import padeldescriptor
 
 
 def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
-                fingerprints: bool=False, timeout: int=4) -> OrderedDict:
+                fingerprints: bool=False, timeout: int=12) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -55,13 +56,14 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                maxruntime=1000*timeout
+                sp_timeout=timeout
             )
             break
         except RuntimeError as exception:
             if attempt == 2:
                 remove('{}.smi'.format(timestamp))
                 if not save_csv:
+                    sleep(0.5)
                     remove(output_csv)
                 raise RuntimeError(exception)
             else:
@@ -81,7 +83,7 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
 
 
 def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
-             fingerprints: bool=False, timeout: int=4) -> list:
+             fingerprints: bool=False, timeout: int=12) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -121,12 +123,13 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                maxruntime=1000*timeout
+                sp_timeout=timeout
             )
             break
         except RuntimeError as exception:
             if attempt == 2:
                 if not save_csv:
+                    sleep(0.5)
                     remove(output_csv)
                 raise RuntimeError(exception)
             else:
