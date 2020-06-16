@@ -78,6 +78,10 @@ def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
     if not save_csv:
         remove(output_csv)
 
+    if len(rows) == 0:
+        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
+                           ' Ensure the input structure is correct.')
+
     del rows[0]['Name']
     return rows[0]
 
@@ -141,6 +145,9 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
     desc_file.close()
     if not save_csv:
         remove(output_csv)
+    if len(rows) == 0:
+        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
+                           ' Ensure the input structure is correct.')
     for row in rows:
         del row['Name']
     return rows
