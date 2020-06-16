@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/wrapper.py
-# v.0.1.6
+# v.0.1.7
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains the `padeldescriptor` function, a wrapper for PaDEL-Descriptor
@@ -45,17 +45,19 @@ def _popen_timeout(command: str, timeout: int) -> tuple:
         return p.communicate()
 
 
-def padeldescriptor(maxruntime: int=-1, waitingjobs: int=-1, threads: int=-1,
-                    d_2d: bool=False, d_3d: bool=False, config: str=None,
-                    convert3d: bool=False, descriptortypes: str=None,
-                    detectaromaticity: bool=False, mol_dir: str=None,
-                    d_file: str=None, fingerprints: bool=False,
-                    log: bool=False, maxcpdperfile: int=0,
-                    removesalt: bool=False, retain3d: bool=False,
-                    retainorder: bool=False, standardizenitro: bool=False,
-                    standardizetautomers: bool=False, tautomerlist: str=None,
-                    usefilenameasmolname: bool=False,
-                    sp_timeout: int=None) -> None:
+def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
+                    threads: int = -1, d_2d: bool = False, d_3d: bool = False,
+                    config: str = None, convert3d: bool = False,
+                    descriptortypes: str = None,
+                    detectaromaticity: bool = False, mol_dir: str = None,
+                    d_file: str = None, fingerprints: bool = False,
+                    log: bool = False, maxcpdperfile: int = 0,
+                    removesalt: bool = False, retain3d: bool = False,
+                    retainorder: bool = False, standardizenitro: bool = False,
+                    standardizetautomers: bool = False,
+                    tautomerlist: str = None,
+                    usefilenameasmolname: bool = False,
+                    sp_timeout: int = None) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 

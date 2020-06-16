@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.6
+# v.0.1.7
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -20,8 +20,8 @@ from time import sleep
 from padelpy import padeldescriptor
 
 
-def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
-                fingerprints: bool=False, timeout: int=12) -> OrderedDict:
+def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
+                fingerprints: bool = False, timeout: int = 12) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -78,12 +78,16 @@ def from_smiles(smiles: str, output_csv: str=None, descriptors: bool=True,
     if not save_csv:
         remove(output_csv)
 
+    if len(rows) == 0:
+        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
+                           ' Ensure the input structure is correct.')
+
     del rows[0]['Name']
     return rows[0]
 
 
-def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
-             fingerprints: bool=False, timeout: int=12) -> list:
+def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
+             fingerprints: bool = False, timeout: int = 12) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -141,6 +145,9 @@ def from_mdl(mdl_file: str, output_csv: str=None, descriptors: bool=True,
     desc_file.close()
     if not save_csv:
         remove(output_csv)
+    if len(rows) == 0:
+        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
+                           ' Ensure the input structure is correct.')
     for row in rows:
         del row['Name']
     return rows
