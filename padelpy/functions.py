@@ -22,7 +22,7 @@ from padelpy import padeldescriptor
 
 
 def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
-                fingerprints: bool = False, timeout: int = 12) -> OrderedDict:
+                fingerprints: bool = False, timeout: int = 60) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -118,7 +118,7 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
 
 
 def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
-             fingerprints: bool = False, timeout: int = 12) -> list:
+             fingerprints: bool = False, timeout: int = 60) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
