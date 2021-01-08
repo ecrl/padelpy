@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.7
+# v.0.1.8
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
@@ -15,30 +15,42 @@ from datetime import datetime
 from os import remove
 from re import compile, IGNORECASE
 from time import sleep
+import warnings
 
 # PaDELPy imports
 from padelpy import padeldescriptor
 
 
-def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
-                fingerprints: bool = False, timeout: int = 12) -> OrderedDict:
+def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
+                fingerprints: bool = False, timeout: int = 60) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
-        smiles (str): SMILES string for a given molecule
+        smiles (str, list): SMILES string for a given molecule, or a list of
+            SMILES strings
         output_csv (str): if supplied, saves descriptors to this CSV file
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
 
     Returns:
-        OrderedDict: descriptors/fingerprint labels and values
+        list or OrderedDict: if multiple SMILES strings provided, returns a
+            list of OrderedDicts, else single OrderedDict; each OrderedDict
+            contains labels and values for each descriptor generated for each
+            supplied molecule
     '''
 
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
 
     with open('{}.smi'.format(timestamp), 'w') as smi_file:
-        smi_file.write(smiles)
+        if type(smiles) == str:
+            smi_file.write(smiles)
+        elif type(smiles) == list:
+            smi_file.write('\n'.join(smiles))
+        else:
+            raise RuntimeError('Unknown input format for `smiles`: {}'.format(
+                type(smiles)
+            ))
     smi_file.close()
 
     save_csv = True
@@ -64,7 +76,10 @@ def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
                 remove('{}.smi'.format(timestamp))
                 if not save_csv:
                     sleep(0.5)
-                    remove(output_csv)
+                    try:
+                        remove(output_csv)
+                    except FileNotFoundError as e:
+                        warnings.warn(e, RuntimeWarning)
                 raise RuntimeError(exception)
             else:
                 continue
@@ -78,16 +93,32 @@ def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
     if not save_csv:
         remove(output_csv)
 
-    if len(rows) == 0:
-        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
-                           ' Ensure the input structure is correct.')
+    if type(smiles) == list and len(rows) != len(smiles):
+        raise RuntimeError('PaDEL-Descriptor failed on one or more mols.' +
+                           ' Ensure the input structures are correct.')
+    elif type(smiles) == str and len(rows) == 0:
+        raise RuntimeError(
+            'PaDEL-Descriptor failed on {}.'.format(smiles) +
+            ' Ensure input structure is correct.'
+        )
 
-    del rows[0]['Name']
-    return rows[0]
+    for idx, r in enumerate(rows):
+        if len(r) == 0:
+            raise RuntimeError(
+                'PaDEL-Descriptor failed on {}.'.format(smiles[idx]) +
+                ' Ensure input structure is correct.'
+            )
+
+    for idx in range(len(rows)):
+        del rows[idx]['Name']
+
+    if type(smiles) == str:
+        return rows[0]
+    return rows
 
 
 def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
-             fingerprints: bool = False, timeout: int = 12) -> list:
+             fingerprints: bool = False, timeout: int = 60) -> list:
     ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -134,7 +165,10 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
             if attempt == 2:
                 if not save_csv:
                     sleep(0.5)
-                    remove(output_csv)
+                    try:
+                        remove(output_csv)
+                    except FileNotFoundError as e:
+                        warnings.warn(e, RuntimeWarning)
                 raise RuntimeError(exception)
             else:
                 continue

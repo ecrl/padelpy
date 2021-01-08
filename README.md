@@ -33,13 +33,16 @@ In addition to providing a complete interface between Python and PaDEL-Descripto
 
 ### SMILES to Descriptors/Fingerprints
 
-The "from_smiles" function accepts a SMILES string as an argument, and returns a Python dictionary with descriptor/fingerprint names/values as keys/values respectively.
+The "from_smiles" function accepts a SMILES string or list of SMILES strings as an argument, and returns a Python dictionary with descriptor/fingerprint names/values as keys/values respectively - if multiple SMILES strings are supplied, "from_smiles" returns a list of dictionaries.
 
 ```python
 from padelpy import from_smiles
 
 # calculate molecular descriptors for propane
 descriptors = from_smiles('CCC')
+
+# calculate molecular descriptors for propane and butane
+descriptors = from_smiles(['CCC', 'CCCC'])
 
 # in addition to descriptors, calculate PubChem fingerprints
 desc_fp = from_smiles('CCC', fingerprints=True)
