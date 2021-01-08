@@ -15,6 +15,7 @@ from datetime import datetime
 from os import remove
 from re import compile, IGNORECASE
 from time import sleep
+import warnings
 
 # PaDELPy imports
 from padelpy import padeldescriptor
@@ -64,7 +65,10 @@ def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
                 remove('{}.smi'.format(timestamp))
                 if not save_csv:
                     sleep(0.5)
-                    remove(output_csv)
+                    try:
+                        remove(output_csv)
+                    except FileNotFoundError as e:
+                        warnings.warn(e, RuntimeWarning)
                 raise RuntimeError(exception)
             else:
                 continue
@@ -134,7 +138,10 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
             if attempt == 2:
                 if not save_csv:
                     sleep(0.5)
-                    remove(output_csv)
+                    try:
+                        remove(output_csv)
+                    except FileNotFoundError as e:
+                        warnings.warn(e, RuntimeWarning)
                 raise RuntimeError(exception)
             else:
                 continue
