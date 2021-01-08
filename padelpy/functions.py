@@ -21,25 +21,36 @@ import warnings
 from padelpy import padeldescriptor
 
 
-def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
+def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 fingerprints: bool = False, timeout: int = 12) -> OrderedDict:
     ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
-        smiles (str): SMILES string for a given molecule
+        smiles (str, list): SMILES string for a given molecule, or a list of
+            SMILES strings
         output_csv (str): if supplied, saves descriptors to this CSV file
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
 
     Returns:
-        OrderedDict: descriptors/fingerprint labels and values
+        list or OrderedDict: if multiple SMILES strings provided, returns a
+            list of OrderedDicts, else single OrderedDict; each OrderedDict
+            contains labels and values for each descriptor generated for each
+            supplied molecule
     '''
 
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
 
     with open('{}.smi'.format(timestamp), 'w') as smi_file:
-        smi_file.write(smiles)
+        if type(smiles) == str:
+            smi_file.write(smiles)
+        elif type(smiles) == list:
+            smi_file.write('\n'.join(smiles))
+        else:
+            raise RuntimeError('Unknown input format for `smiles`: {}'.format(
+                type(smiles)
+            ))
     smi_file.close()
 
     save_csv = True
@@ -82,12 +93,28 @@ def from_smiles(smiles: str, output_csv: str = None, descriptors: bool = True,
     if not save_csv:
         remove(output_csv)
 
-    if len(rows) == 0:
-        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
-                           ' Ensure the input structure is correct.')
+    if type(smiles) == list and len(rows) != len(smiles):
+        raise RuntimeError('PaDEL-Descriptor failed on one or more mols.' +
+                           ' Ensure the input structures are correct.')
+    elif type(smiles) == str and len(rows) == 0:
+        raise RuntimeError(
+            'PaDEL-Descriptor failed on {}.'.format(smiles) +
+            ' Ensure input structure is correct.'
+        )
 
-    del rows[0]['Name']
-    return rows[0]
+    for idx, r in enumerate(rows):
+        if len(r) == 0:
+            raise RuntimeError(
+                'PaDEL-Descriptor failed on {}.'.format(smiles[idx]) +
+                ' Ensure input structure is correct.'
+            )
+
+    for idx in range(len(rows)):
+        del rows[idx]['Name']
+
+    if type(smiles) == str:
+        return rows[0]
+    return rows
 
 
 def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
