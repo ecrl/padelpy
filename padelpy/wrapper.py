@@ -45,7 +45,7 @@ def _popen_timeout(command: str, timeout: int) -> tuple:
         return p.communicate()
 
 
-def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
+def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: int = -1,
                     threads: int = -1, d_2d: bool = False, d_3d: bool = False,
                     config: str = None, convert3d: bool = False,
                     descriptortypes: str = None,
@@ -103,8 +103,10 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
         raise ReferenceError(
             'Java JRE 6+ not found (required for PaDEL-Descriptor)'
         )
-
-    command = 'java -jar {}'.format(_PADEL_PATH)
+    if headless:
+        command = 'java -Xms1G -Xmx1G -Djava.awt.headless=true -jar {}'.format(_PADEL_PATH)
+    else:
+        command = 'java -jar {}'.format(_PADEL_PATH)
     command += ' -maxruntime {}'.format(maxruntime)
     command += ' -waitingjobs {}'.format(waitingjobs)
     command += ' -threads {}'.format(threads)
