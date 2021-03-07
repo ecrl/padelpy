@@ -133,7 +133,7 @@ padeldescriptor(standardizetautomers=True)
 padeldescriptor(tautomerlist='\\path\\to\\tautomers\\')
 
 # to use filenames as molecule names
-padeldescriptor(usefilenamesasmolname=True)
+padeldescriptor(usefilenameasmolname=True)
 
 # to set the maximum number of compounds in a resulting descriptors file
 padeldescriptor(maxcpdperfile=32)
