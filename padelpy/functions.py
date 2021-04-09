@@ -68,7 +68,8 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                sp_timeout=timeout
+                sp_timeout=timeout,
+                retainorder=True
             )
             break
         except RuntimeError as exception:
