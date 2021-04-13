@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/functions.py
-# v.0.1.8
+# v.0.1.9
 # Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains various functions commonly used with PaDEL-Descriptor
