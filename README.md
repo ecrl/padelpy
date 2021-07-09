@@ -147,7 +147,7 @@ padeldescriptor(waitingjobs=10)
 # to set the maximum number of threads used
 padeldescriptor(threads=2)
 
-# to prevent the padel-splash from screen
+# to prevents padel-splash image from loading.
 padeldescriptor(headless=True)
 
 ```

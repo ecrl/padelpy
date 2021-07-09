@@ -58,7 +58,7 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
                     tautomerlist: str = None,
                     usefilenameasmolname: bool = False,
                     sp_timeout: int = None,
-                    headless :bool = True,
+                    headless: bool = True,
                     ) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
