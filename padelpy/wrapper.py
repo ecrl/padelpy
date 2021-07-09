@@ -45,7 +45,7 @@ def _popen_timeout(command: str, timeout: int) -> tuple:
         return p.communicate()
 
 
-def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: int = -1,
+def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
                     threads: int = -1, d_2d: bool = False, d_3d: bool = False,
                     config: str = None, convert3d: bool = False,
                     descriptortypes: str = None,
@@ -57,7 +57,9 @@ def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: in
                     standardizetautomers: bool = False,
                     tautomerlist: str = None,
                     usefilenameasmolname: bool = False,
-                    sp_timeout: int = None) -> None:
+                    sp_timeout: int = None,
+                    headless :bool = True,
+                    ) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 
@@ -94,6 +96,7 @@ def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: in
         tautomerlist (str): path to SMIRKS tautomers file (optional)
         usefilenameasmolname (bool): if `True`, uses filename (minus the
             extension) as the molecule name
+        headless (bool): if `True`, Prevents Padel-splash image from loading. 
 
     Returns:
         None
@@ -104,7 +107,7 @@ def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: in
             'Java JRE 6+ not found (required for PaDEL-Descriptor)'
         )
     if headless:
-        command = 'java -Xms1G -Xmx1G -Djava.awt.headless=true -jar {}'.format(_PADEL_PATH)
+        command = 'java -Djava.awt.headless=true -jar {}'.format(_PADEL_PATH)
     else:
         command = 'java -jar {}'.format(_PADEL_PATH)
     command += ' -maxruntime {}'.format(maxruntime)
@@ -152,3 +155,4 @@ def padeldescriptor(headless :bool = True, maxruntime: int = -1, waitingjobs: in
             err.decode('utf-8')
         ))
     return
+ 
