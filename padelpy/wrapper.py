@@ -57,7 +57,9 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
                     standardizetautomers: bool = False,
                     tautomerlist: str = None,
                     usefilenameasmolname: bool = False,
-                    sp_timeout: int = None) -> None:
+                    sp_timeout: int = None,
+                    headless: bool = True,
+                    ) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 
@@ -94,6 +96,7 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
         tautomerlist (str): path to SMIRKS tautomers file (optional)
         usefilenameasmolname (bool): if `True`, uses filename (minus the
             extension) as the molecule name
+        headless (bool): if `True`, Prevents Padel-splash image from loading. 
 
     Returns:
         None
@@ -103,8 +106,10 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
         raise ReferenceError(
             'Java JRE 6+ not found (required for PaDEL-Descriptor)'
         )
-
-    command = 'java -jar {}'.format(_PADEL_PATH)
+    if headless:
+        command = 'java -Djava.awt.headless=true -jar {}'.format(_PADEL_PATH)
+    else:
+        command = 'java -jar {}'.format(_PADEL_PATH)
     command += ' -maxruntime {}'.format(maxruntime)
     command += ' -waitingjobs {}'.format(waitingjobs)
     command += ' -threads {}'.format(threads)
@@ -150,3 +155,4 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
             err.decode('utf-8')
         ))
     return
+ 
