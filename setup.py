@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='padelpy',
-    version='0.1.9',
+    version='0.1.10',
     description='A Python wrapper for PaDEL-Descriptor',
     url='https://github.com/ecrl/padelpy',
     author='Travis Kessler',

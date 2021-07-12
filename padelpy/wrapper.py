@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # padelpy/wrapper.py
-# v.0.1.9
-# Developed in 2019 by Travis Kessler <travis.j.kessler@gmail.com>
+# v.0.1.10
+# Developed in 2021 by Travis Kessler <travis.j.kessler@gmail.com>
 #
 # Contains the `padeldescriptor` function, a wrapper for PaDEL-Descriptor
 #
@@ -58,8 +58,7 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
                     tautomerlist: str = None,
                     usefilenameasmolname: bool = False,
                     sp_timeout: int = None,
-                    headless: bool = True,
-                    ) -> None:
+                    headless: bool = True) -> None:
     ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 
@@ -96,7 +95,7 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
         tautomerlist (str): path to SMIRKS tautomers file (optional)
         usefilenameasmolname (bool): if `True`, uses filename (minus the
             extension) as the molecule name
-        headless (bool): if `True`, Prevents Padel-splash image from loading. 
+        headless (bool): if `True`, prevents Padel-splash image from loading. 
 
     Returns:
         None
