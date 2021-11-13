@@ -8,6 +8,7 @@
 # Contains various functions commonly used with PaDEL-Descriptor
 #
 
+import warnings
 # stdlib. imports
 from collections import OrderedDict
 from csv import DictReader
@@ -15,10 +16,15 @@ from datetime import datetime
 from os import remove
 from re import compile, IGNORECASE
 from time import sleep
-import warnings
 
 # PaDELPy imports
 from padelpy import padeldescriptor
+
+__all__ = [
+    "from_mdl",
+    "from_smiles",
+    "from_sdf",
+]
 
 
 def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,

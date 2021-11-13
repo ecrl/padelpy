@@ -21,6 +21,10 @@ _PADEL_PATH = join(
     'PaDEL-Descriptor.jar'
 )
 
+__all__ = [
+    "padeldescriptor",
+]
+
 
 def _popen_timeout(command: str, timeout: int) -> tuple:
     ''' Calls PaDEL-Descriptor, with optional subprocess timeout
@@ -154,4 +158,4 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
             err.decode('utf-8')
         ))
     return
- 
+
