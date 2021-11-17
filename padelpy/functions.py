@@ -147,50 +147,11 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
             mdl_file
         ))
 
-    save_csv = True
-    if output_csv is None:
-        save_csv = False
-        output_csv = "{}.csv".format(
-            datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
-        )
-
-    for attempt in range(3):
-        try:
-            padeldescriptor(
-                mol_dir=mdl_file,
-                d_file=output_csv,
-                convert3d=True,
-                retain3d=True,
-                retainorder=True,
-                d_2d=descriptors,
-                d_3d=descriptors,
-                fingerprints=fingerprints,
-                sp_timeout=timeout
-            )
-            break
-        except RuntimeError as exception:
-            if attempt == 2:
-                if not save_csv:
-                    sleep(0.5)
-                    try:
-                        remove(output_csv)
-                    except FileNotFoundError as e:
-                        warnings.warn(e, RuntimeWarning)
-                raise RuntimeError(exception)
-            else:
-                continue
-
-    with open(output_csv, "r", encoding="utf-8") as desc_file:
-        reader = DictReader(desc_file)
-        rows = [row for row in reader]
-    desc_file.close()
-    if not save_csv:
-        remove(output_csv)
-    if len(rows) == 0:
-        raise RuntimeError("PaDEL-Descriptor returned no calculated values." +
-                           " Ensure the input structure is correct.")
-    for row in rows:
-        del row["Name"]
+    rows = _from_mdl_lower(mol_file=mdl_file,
+                           output_csv=output_csv,
+                           descriptors=descriptors,
+                           fingerprints=fingerprints,
+                           timeout=timeout)
     return rows
 
 
@@ -220,6 +181,16 @@ def from_sdf(sdf_file: str,
             sdf_file
         ))
 
+    rows = _from_mdl_lower(mol_file=sdf_file,
+                           output_csv=output_csv,
+                           descriptors=descriptors,
+                           fingerprints=fingerprints,
+                           timeout=timeout)
+    return rows
+
+
+def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = True,
+                    fingerprints: bool = False, timeout: int = 60) -> list:
     save_csv = True
     if output_csv is None:
         save_csv = False
@@ -230,7 +201,7 @@ def from_sdf(sdf_file: str,
     for attempt in range(3):
         try:
             padeldescriptor(
-                mol_dir=sdf_file,
+                mol_dir=mol_file,
                 d_file=output_csv,
                 convert3d=True,
                 retain3d=True,
@@ -264,4 +235,5 @@ def from_sdf(sdf_file: str,
                            " Ensure the input structure is correct.")
     for row in rows:
         del row["Name"]
+
     return rows

@@ -8,6 +8,16 @@ def get_readme():
         return fhandle.read()
 
 
+def get_version_info():
+    """Read __version__ from version.py, using exec, not import."""
+    fn_version = os.path.join("padelpy", "version.py")
+    myglobals = {}
+    with open(fn_version, "r") as f:
+        # pylint: disable=exec-used
+        exec(f.read(), myglobals)
+    return myglobals["__version__"]
+
+
 VERSION = get_version_info()
 
 setup(
