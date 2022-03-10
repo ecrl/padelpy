@@ -27,7 +27,7 @@ __all__ = [
 
 
 def _popen_timeout(command: str, timeout: int) -> tuple:
-    ''' Calls PaDEL-Descriptor, with optional subprocess timeout
+    """Calls PaDEL-Descriptor, with optional subprocess timeout
 
     Args:
         command (str): command to execute via subprocess.Popen
@@ -35,7 +35,7 @@ def _popen_timeout(command: str, timeout: int) -> tuple:
 
     Returns:
         tuple: (stdout of process, stderr of process)
-    '''
+    """
 
     p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
     if timeout is not None:
@@ -49,21 +49,31 @@ def _popen_timeout(command: str, timeout: int) -> tuple:
         return p.communicate()
 
 
-def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
-                    threads: int = -1, d_2d: bool = False, d_3d: bool = False,
-                    config: str = None, convert3d: bool = False,
+def padeldescriptor(maxruntime: int = -1,
+                    waitingjobs: int = -1,
+                    threads: int = -1,
+                    d_2d: bool = False,
+                    d_3d: bool = False,
+                    config: str = None,
+                    convert3d: bool = False,
                     descriptortypes: str = None,
-                    detectaromaticity: bool = False, mol_dir: str = None,
-                    d_file: str = None, fingerprints: bool = False,
-                    log: bool = False, maxcpdperfile: int = 0,
-                    removesalt: bool = False, retain3d: bool = False,
-                    retainorder: bool = False, standardizenitro: bool = False,
+                    detectaromaticity: bool = False,
+                    mol_dir: str = None,
+                    d_file: str = None,
+                    fingerprints: bool = False,
+                    log: bool = False,
+                    maxcpdperfile: int = 0,
+                    removesalt: bool = False,
+                    retain3d: bool = False,
+                    retainorder: bool = False,
+                    standardizenitro: bool = False,
                     standardizetautomers: bool = False,
                     tautomerlist: str = None,
                     usefilenameasmolname: bool = False,
                     sp_timeout: int = None,
-                    headless: bool = True) -> None:
-    ''' padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
+                    headless: bool = True
+                    ) -> None:
+    """padeldescriptor: complete wrapper for PaDEL-Descriptor descriptor/
     fingerprint generation software
 
     Args:
@@ -103,7 +113,7 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
 
     Returns:
         None
-    '''
+    """
 
     if which('java') is None:
         raise ReferenceError(
@@ -158,4 +168,3 @@ def padeldescriptor(maxruntime: int = -1, waitingjobs: int = -1,
             err.decode('utf-8')
         ))
     return
-

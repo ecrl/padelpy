@@ -14,7 +14,7 @@ from collections import OrderedDict
 from csv import DictReader
 from datetime import datetime
 from os import remove
-from re import compile, IGNORECASE
+from re import IGNORECASE, compile
 from time import sleep
 
 # PaDELPy imports
@@ -27,9 +27,14 @@ __all__ = [
 ]
 
 
-def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
-                fingerprints: bool = False, timeout: int = 60) -> OrderedDict:
-    """ from_smiles: converts SMILES string to QSPR descriptors/fingerprints
+def from_smiles(smiles,
+                output_csv: str = None,
+                descriptors: bool = True,
+                fingerprints: bool = False,
+                timeout: int = 60,
+                maxruntime: int = -1,
+                ) -> OrderedDict:
+    """ from_smiles: converts SMILES string to QSPR descriptors/fingerprints.
 
     Args:
         smiles (str, list): SMILES string for a given molecule, or a list of
@@ -38,6 +43,7 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
 
     Returns:
         list or OrderedDict: if multiple SMILES strings provided, returns a
@@ -75,6 +81,7 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
+                maxruntime=maxruntime,
                 retainorder=True
             )
             break
@@ -124,8 +131,13 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
     return rows
 
 
-def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
-             fingerprints: bool = False, timeout: int = 60) -> list:
+def from_mdl(mdl_file: str,
+             output_csv: str = None,
+             descriptors: bool = True,
+             fingerprints: bool = False,
+             timeout: int = 60,
+             maxruntime: int = -1,
+             ) -> list:
     """ from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -135,6 +147,7 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
 
     Returns:
         list: list of dicts, where each dict corresponds sequentially to a
@@ -151,7 +164,9 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           timeout=timeout)
+                           timeout=timeout,
+                           maxruntime=maxruntime,
+                           )
     return rows
 
 
@@ -159,7 +174,9 @@ def from_sdf(sdf_file: str,
              output_csv: str = None,
              descriptors: bool = True,
              fingerprints: bool = False,
-             timeout: int = 60) -> list:
+             timeout: int = 60,
+             maxruntime: int = -1,
+             ) -> list:
     """ Converts sdf file into QSPR descriptors/fingerprints.
     Multiple molecules may be represented in the sdf file
 
@@ -169,6 +186,8 @@ def from_sdf(sdf_file: str,
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
+
 
     Returns:
         list: list of dicts, where each dict corresponds sequentially to a compound in the
@@ -185,12 +204,24 @@ def from_sdf(sdf_file: str,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           timeout=timeout)
+                           timeout=timeout,
+                           maxruntime=maxruntime,
+                           )
     return rows
 
 
-def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = True,
-                    fingerprints: bool = False, timeout: int = 60) -> list:
+def _from_mdl_lower(mol_file: str,
+                    output_csv: str = None,
+                    descriptors: bool = True,
+                    fingerprints: bool = False,
+                    sp_timeout: int = 60,
+                    maxruntime: int = -1,
+                    ) -> list:
+    # unit conversion for maximum running time per molecule
+    # seconds -> milliseconds
+    if maxruntime != -1:
+        maxruntime = maxruntime * 1000
+
     save_csv = True
     if output_csv is None:
         save_csv = False
@@ -201,6 +232,7 @@ def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = T
     for attempt in range(3):
         try:
             padeldescriptor(
+                maxruntime=maxruntime,
                 mol_dir=mol_file,
                 d_file=output_csv,
                 convert3d=True,
@@ -209,7 +241,7 @@ def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = T
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                sp_timeout=timeout
+                sp_timeout=sp_timeout,
             )
             break
         except RuntimeError as exception:
