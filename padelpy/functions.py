@@ -51,6 +51,10 @@ def from_smiles(smiles,
             contains labels and values for each descriptor generated for each
             supplied molecule
     """
+    # unit conversion for maximum running time per molecule
+    # seconds -> milliseconds
+    if maxruntime != -1:
+        maxruntime = maxruntime * 1000
 
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
 
