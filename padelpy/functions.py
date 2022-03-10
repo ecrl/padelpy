@@ -208,7 +208,7 @@ def from_sdf(sdf_file: str,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           timeout=timeout,
+                           sp_timeout=timeout,
                            maxruntime=maxruntime,
                            )
     return rows
