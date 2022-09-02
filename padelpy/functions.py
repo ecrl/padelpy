@@ -28,7 +28,7 @@ __all__ = [
 
 
 def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
-                fingerprints: bool = False, timeout: int = 60) -> OrderedDict:
+                fingerprints: bool = False, timeout: int = 60, threads: int = -1 ) -> OrderedDict:
     """ from_smiles: converts SMILES string to QSPR descriptors/fingerprints
 
     Args:
@@ -75,7 +75,8 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
-                retainorder=True
+                retainorder=True,
+                threads = threads
             )
             break
         except RuntimeError as exception:
@@ -125,7 +126,7 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
 
 
 def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
-             fingerprints: bool = False, timeout: int = 60) -> list:
+             fingerprints: bool = False, timeout: int = 60, threads: int = -1) -> list:
     """ from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
@@ -151,7 +152,9 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           timeout=timeout)
+                           timeout=timeout,
+                           threads=threads
+                          )
     return rows
 
 
@@ -159,7 +162,9 @@ def from_sdf(sdf_file: str,
              output_csv: str = None,
              descriptors: bool = True,
              fingerprints: bool = False,
-             timeout: int = 60) -> list:
+             timeout: int = 60,
+             threads: int = -1
+            ) -> list:
     """ Converts sdf file into QSPR descriptors/fingerprints.
     Multiple molecules may be represented in the sdf file
 
@@ -185,12 +190,14 @@ def from_sdf(sdf_file: str,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           timeout=timeout)
+                           timeout=timeout,
+                           threads=threads
+                          )
     return rows
 
 
 def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = True,
-                    fingerprints: bool = False, timeout: int = 60) -> list:
+                    fingerprints: bool = False, timeout: int = 60, threads: int = -1) -> list:
     save_csv = True
     if output_csv is None:
         save_csv = False
@@ -209,7 +216,8 @@ def _from_mdl_lower(mol_file: str, output_csv: str = None, descriptors: bool = T
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                sp_timeout=timeout
+                sp_timeout=timeout, 
+                threads=threads
             )
             break
         except RuntimeError as exception:
