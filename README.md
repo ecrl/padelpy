@@ -50,7 +50,7 @@ desc_fp = from_smiles('CCC', fingerprints=True)
 # only calculate fingerprints
 fingerprints = from_smiles('CCC', fingerprints=True, descriptors=False)
 
-# setting number of threads, this uses one cpu thread to compute descriptors
+# setting the number of threads, this uses one cpu thread to compute descriptors
 descriptors = from_smiles(['CCC', 'CCCC'], threads = 1)
 
 # save descriptors to a CSV file
@@ -73,6 +73,9 @@ desc_fp = from_mdl('mols.mdl', fingerprints=True)
 # only calculate fingerprints
 fingerprints = from_mdl('mols.mdl', fingerprints=True, descriptors=False)
 
+# setting the number of threads, this uses one cpu thread to compute descriptors
+desc_fp = from_mdl('mols.mdl', threads=1)
+
 # save descriptors to a CSV file
 _ = from_mdl('mols.mdl', output_csv='descriptors.csv')
 ```
@@ -94,6 +97,9 @@ desc_fp = from_sdf('mols.sdf', fingerprints=True)
 
 # only calculate fingerprints
 fingerprints = from_sdf('mols.sdf', fingerprints=True, descriptors=False)
+
+# setting the number of threads, this uses one cpu thread to compute descriptors
+desc_fp = from_mdl('mols.sdf', threads=1)
 
 # save descriptors to a CSV file
 _ = from_sdf('mols.sdf', output_csv='descriptors.csv')
