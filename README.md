@@ -50,6 +50,9 @@ desc_fp = from_smiles('CCC', fingerprints=True)
 # only calculate fingerprints
 fingerprints = from_smiles('CCC', fingerprints=True, descriptors=False)
 
+# setting number of threads, this uses one cpu thread to compute descriptors
+descriptors = from_smiles(['CCC', 'CCCC'], threads = 1)
+
 # save descriptors to a CSV file
 _ = from_smiles('CCC', output_csv='descriptors.csv')
 ```
