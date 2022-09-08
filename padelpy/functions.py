@@ -89,7 +89,6 @@ def from_smiles(smiles,
                 sp_timeout=timeout,
                 retainorder=True,
                 maxruntime=maxruntime,
-                retainorder=True,
                 threads=threads
             )
             break
