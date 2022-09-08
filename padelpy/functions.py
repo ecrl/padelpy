@@ -33,6 +33,7 @@ def from_smiles(smiles,
                 fingerprints: bool = False,
                 timeout: int = 60,
                 maxruntime: int = -1,
+                threads: int = -1
                 ) -> OrderedDict:
     """ from_smiles: converts SMILES string to QSPR descriptors/fingerprints.
 
@@ -44,6 +45,7 @@ def from_smiles(smiles,
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
         maxruntime (int): maximum running time per molecule in seconds. default=-1.
+        threads (int): number of threads to use; defaults to -1 for max available
 
     Returns:
         list or OrderedDict: if multiple SMILES strings provided, returns a
@@ -85,8 +87,9 @@ def from_smiles(smiles,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
+                retainorder=True,
                 maxruntime=maxruntime,
-                retainorder=True
+                threads=threads
             )
             break
         except RuntimeError as exception:
@@ -149,6 +152,7 @@ def from_mdl(mdl_file: str,
              fingerprints: bool = False,
              timeout: int = 60,
              maxruntime: int = -1,
+             threads: int = -1
              ) -> list:
     """ from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
@@ -178,7 +182,8 @@ def from_mdl(mdl_file: str,
                            fingerprints=fingerprints,
                            timeout=timeout,
                            maxruntime=maxruntime,
-                           )
+                           threads=threads
+                          )
     return rows
 
 
@@ -188,7 +193,8 @@ def from_sdf(sdf_file: str,
              fingerprints: bool = False,
              timeout: int = 60,
              maxruntime: int = -1,
-             ) -> list:
+             threads: int = -1
+            ) -> list:
     """ Converts sdf file into QSPR descriptors/fingerprints.
     Multiple molecules may be represented in the sdf file
 
@@ -216,9 +222,10 @@ def from_sdf(sdf_file: str,
                            output_csv=output_csv,
                            descriptors=descriptors,
                            fingerprints=fingerprints,
-                           sp_timeout=timeout,
+                           timeout=timeout,
                            maxruntime=maxruntime,
-                           )
+                           threads=threads
+                          )
     return rows
 
 
@@ -226,8 +233,9 @@ def _from_mdl_lower(mol_file: str,
                     output_csv: str = None,
                     descriptors: bool = True,
                     fingerprints: bool = False,
-                    sp_timeout: int = 60,
+                    timeout: int = 60,
                     maxruntime: int = -1,
+                    threads: int = -1
                     ) -> list:
     # unit conversion for maximum running time per molecule
     # seconds -> milliseconds
@@ -253,7 +261,8 @@ def _from_mdl_lower(mol_file: str,
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                sp_timeout=sp_timeout,
+                sp_timeout=timeout, 
+                threads=threads
             )
             break
         except RuntimeError as exception:
