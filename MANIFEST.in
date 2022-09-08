@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include *.py
+
+graft padelpy/PaDEL-Descriptor/
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

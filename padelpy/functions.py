@@ -90,6 +90,14 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 raise RuntimeError(exception)
             else:
                 continue
+        except KeyboardInterrupt as kb_exception:
+            remove("{}.smi".format(timestamp))
+            if not save_csv:
+                try:
+                    remove(output_csv)
+                except FileNotFoundError as e:
+                    warnings.warn(e, RuntimeWarning)
+            raise kb_exception
 
     with open(output_csv, "r", encoding="utf-8") as desc_file:
         reader = DictReader(desc_file)
