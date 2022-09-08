@@ -88,7 +88,6 @@ def from_smiles(smiles,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
                 retainorder=True,
-                threads = threads
                 maxruntime=maxruntime,
                 retainorder=True,
                 threads=threads
