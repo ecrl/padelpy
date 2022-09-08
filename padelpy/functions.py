@@ -195,6 +195,7 @@ def from_sdf(sdf_file: str,
              timeout: int = 60,
              maxruntime: int = -1,
              threads: int = -1
+            ) -> list:
     """ Converts sdf file into QSPR descriptors/fingerprints.
     Multiple molecules may be represented in the sdf file
 
