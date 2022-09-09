@@ -50,6 +50,9 @@ desc_fp = from_smiles('CCC', fingerprints=True)
 # only calculate fingerprints
 fingerprints = from_smiles('CCC', fingerprints=True, descriptors=False)
 
+# setting the number of threads, this uses one cpu thread to compute descriptors
+descriptors = from_smiles(['CCC', 'CCCC'], threads = 1)
+
 # save descriptors to a CSV file
 _ = from_smiles('CCC', output_csv='descriptors.csv')
 ```
@@ -70,8 +73,36 @@ desc_fp = from_mdl('mols.mdl', fingerprints=True)
 # only calculate fingerprints
 fingerprints = from_mdl('mols.mdl', fingerprints=True, descriptors=False)
 
+# setting the number of threads, this uses one cpu thread to compute descriptors
+desc_fp = from_mdl('mols.mdl', threads=1)
+
 # save descriptors to a CSV file
 _ = from_mdl('mols.mdl', output_csv='descriptors.csv')
+```
+
+### SDF to Descriptors/Fingerprints
+
+The "from_sdf" function accepts a filepath as an argument, and returns a list.
+Each list element is a dictionary with descriptors/fingerprints corresponding to each supplied
+molecule (indexed as they appear in the SDF file).
+
+```python
+from padelpy import from_sdf
+
+# calculate molecular descriptors for molecules in `mols.sdf`
+descriptors = from_sdf('mols.sdf')
+
+# in addition to descriptors, calculate PubChem fingerprints
+desc_fp = from_sdf('mols.sdf', fingerprints=True)
+
+# only calculate fingerprints
+fingerprints = from_sdf('mols.sdf', fingerprints=True, descriptors=False)
+
+# setting the number of threads, this uses one cpu thread to compute descriptors
+desc_fp = from_mdl('mols.sdf', threads=1)
+
+# save descriptors to a CSV file
+_ = from_sdf('mols.sdf', output_csv='descriptors.csv')
 ```
 
 ### Command Line Wrapper
@@ -84,8 +115,11 @@ from padelpy import padeldescriptor
 # to supply a configuration file
 padeldescriptor(config='\\path\\to\\config')
 
-# to supply an input and output file
+# to supply an input (MDL) and output file
 padeldescriptor(mol_dir='molecules.mdl', d_file='descriptors.csv')
+
+# to supply an input (SDF) and output file
+padeldescriptor(mol_dir='molecules.sdf', d_file='descriptors.csv')
 
 # a SMILES file can be supplied
 padeldescriptor(mol_dir='molecules.smi', d_file='descriptors.csv')

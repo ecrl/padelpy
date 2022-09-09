@@ -8,22 +8,34 @@
 # Contains various functions commonly used with PaDEL-Descriptor
 #
 
+import warnings
 # stdlib. imports
 from collections import OrderedDict
 from csv import DictReader
 from datetime import datetime
 from os import remove
-from re import compile, IGNORECASE
+from re import IGNORECASE, compile
 from time import sleep
-import warnings
 
 # PaDELPy imports
 from padelpy import padeldescriptor
 
+__all__ = [
+    "from_mdl",
+    "from_smiles",
+    "from_sdf",
+]
 
-def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
-                fingerprints: bool = False, timeout: int = 60) -> OrderedDict:
-    ''' from_smiles: converts SMILES string to QSPR descriptors/fingerprints
+
+def from_smiles(smiles,
+                output_csv: str = None,
+                descriptors: bool = True,
+                fingerprints: bool = False,
+                timeout: int = 60,
+                maxruntime: int = -1,
+                threads: int = -1
+                ) -> OrderedDict:
+    """ from_smiles: converts SMILES string to QSPR descriptors/fingerprints.
 
     Args:
         smiles (str, list): SMILES string for a given molecule, or a list of
@@ -32,23 +44,29 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
+        threads (int): number of threads to use; defaults to -1 for max available
 
     Returns:
         list or OrderedDict: if multiple SMILES strings provided, returns a
             list of OrderedDicts, else single OrderedDict; each OrderedDict
             contains labels and values for each descriptor generated for each
             supplied molecule
-    '''
+    """
+    # unit conversion for maximum running time per molecule
+    # seconds -> milliseconds
+    if maxruntime != -1:
+        maxruntime = maxruntime * 1000
 
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
 
-    with open('{}.smi'.format(timestamp), 'w') as smi_file:
+    with open("{}.smi".format(timestamp), "w") as smi_file:
         if type(smiles) == str:
             smi_file.write(smiles)
         elif type(smiles) == list:
-            smi_file.write('\n'.join(smiles))
+            smi_file.write("\n".join(smiles))
         else:
-            raise RuntimeError('Unknown input format for `smiles`: {}'.format(
+            raise RuntimeError("Unknown input format for `smiles`: {}".format(
                 type(smiles)
             ))
     smi_file.close()
@@ -56,12 +74,12 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
     save_csv = True
     if output_csv is None:
         save_csv = False
-        output_csv = '{}.csv'.format(timestamp)
+        output_csv = "{}.csv".format(timestamp)
 
     for attempt in range(3):
         try:
             padeldescriptor(
-                mol_dir='{}.smi'.format(timestamp),
+                mol_dir="{}.smi".format(timestamp),
                 d_file=output_csv,
                 convert3d=True,
                 retain3d=True,
@@ -69,12 +87,14 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
-                retainorder=True
+                retainorder=True,
+                maxruntime=maxruntime,
+                threads=threads
             )
             break
         except RuntimeError as exception:
             if attempt == 2:
-                remove('{}.smi'.format(timestamp))
+                remove("{}.smi".format(timestamp))
                 if not save_csv:
                     sleep(0.5)
                     try:
@@ -84,43 +104,57 @@ def from_smiles(smiles, output_csv: str = None, descriptors: bool = True,
                 raise RuntimeError(exception)
             else:
                 continue
+        except KeyboardInterrupt as kb_exception:
+            remove("{}.smi".format(timestamp))
+            if not save_csv:
+                try:
+                    remove(output_csv)
+                except FileNotFoundError as e:
+                    warnings.warn(e, RuntimeWarning)
+            raise kb_exception
 
-    with open(output_csv, 'r', encoding='utf-8') as desc_file:
+    with open(output_csv, "r", encoding="utf-8") as desc_file:
         reader = DictReader(desc_file)
         rows = [row for row in reader]
     desc_file.close()
 
-    remove('{}.smi'.format(timestamp))
+    remove("{}.smi".format(timestamp))
     if not save_csv:
         remove(output_csv)
 
     if type(smiles) == list and len(rows) != len(smiles):
-        raise RuntimeError('PaDEL-Descriptor failed on one or more mols.' +
-                           ' Ensure the input structures are correct.')
+        raise RuntimeError("PaDEL-Descriptor failed on one or more mols." +
+                           " Ensure the input structures are correct.")
     elif type(smiles) == str and len(rows) == 0:
         raise RuntimeError(
-            'PaDEL-Descriptor failed on {}.'.format(smiles) +
-            ' Ensure input structure is correct.'
+            "PaDEL-Descriptor failed on {}.".format(smiles) +
+            " Ensure input structure is correct."
         )
 
     for idx, r in enumerate(rows):
         if len(r) == 0:
             raise RuntimeError(
-                'PaDEL-Descriptor failed on {}.'.format(smiles[idx]) +
-                ' Ensure input structure is correct.'
+                "PaDEL-Descriptor failed on {}.".format(smiles[idx]) +
+                " Ensure input structure is correct."
             )
 
     for idx in range(len(rows)):
-        del rows[idx]['Name']
+        del rows[idx]["Name"]
 
     if type(smiles) == str:
         return rows[0]
     return rows
 
 
-def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
-             fingerprints: bool = False, timeout: int = 60) -> list:
-    ''' from_mdl: converts MDL file into QSPR descriptors/fingerprints;
+def from_mdl(mdl_file: str,
+             output_csv: str = None,
+             descriptors: bool = True,
+             fingerprints: bool = False,
+             timeout: int = 60,
+             maxruntime: int = -1,
+             threads: int = -1
+             ) -> list:
+    """ from_mdl: converts MDL file into QSPR descriptors/fingerprints;
     multiple molecules may be represented in the MDL file
 
     Args:
@@ -129,29 +163,97 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
         descriptors (bool): if `True`, calculates descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
 
     Returns:
         list: list of dicts, where each dict corresponds sequentially to a
             compound in the supplied MDL file
-    '''
+    """
 
-    is_mdl = compile(r'.*\.mdl$', IGNORECASE)
+    is_mdl = compile(r".*\.mdl$", IGNORECASE)
     if is_mdl.match(mdl_file) is None:
-        raise ValueError('MDL file must have a `.mdl` extension: {}'.format(
+        raise ValueError("MDL file must have a `.mdl` extension: {}".format(
             mdl_file
         ))
+
+    rows = _from_mdl_lower(mol_file=mdl_file,
+                           output_csv=output_csv,
+                           descriptors=descriptors,
+                           fingerprints=fingerprints,
+                           timeout=timeout,
+                           maxruntime=maxruntime,
+                           threads=threads
+                          )
+    return rows
+
+
+def from_sdf(sdf_file: str,
+             output_csv: str = None,
+             descriptors: bool = True,
+             fingerprints: bool = False,
+             timeout: int = 60,
+             maxruntime: int = -1,
+             threads: int = -1
+            ) -> list:
+    """ Converts sdf file into QSPR descriptors/fingerprints.
+    Multiple molecules may be represented in the sdf file
+
+    Args:
+        sdf_file (str): path to sdf file
+        output_csv (str): if supplied, saves descriptors/fingerprints here
+        descriptors (bool): if `True`, calculates descriptors
+        fingerprints (bool): if `True`, calculates fingerprints
+        timeout (int): maximum time, in seconds, for conversion
+        maxruntime (int): maximum running time per molecule in seconds. default=-1.
+
+
+    Returns:
+        list: list of dicts, where each dict corresponds sequentially to a compound in the
+        supplied sdf file
+    """
+
+    is_sdf = compile(r".*\.sdf$", IGNORECASE)
+    if is_sdf.match(sdf_file) is None:
+        raise ValueError("sdf file must have a `.sdf` extension: {}".format(
+            sdf_file
+        ))
+
+    rows = _from_mdl_lower(mol_file=sdf_file,
+                           output_csv=output_csv,
+                           descriptors=descriptors,
+                           fingerprints=fingerprints,
+                           timeout=timeout,
+                           maxruntime=maxruntime,
+                           threads=threads
+                          )
+    return rows
+
+
+def _from_mdl_lower(mol_file: str,
+                    output_csv: str = None,
+                    descriptors: bool = True,
+                    fingerprints: bool = False,
+                    timeout: int = 60,
+                    maxruntime: int = -1,
+                    threads: int = -1
+                    ) -> list:
+    # unit conversion for maximum running time per molecule
+    # seconds -> milliseconds
+    if maxruntime != -1:
+        maxruntime = maxruntime * 1000
 
     save_csv = True
     if output_csv is None:
         save_csv = False
-        output_csv = '{}.csv'.format(
-            datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
+        output_csv = "{}.csv".format(
+            datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
         )
 
     for attempt in range(3):
         try:
             padeldescriptor(
-                mol_dir=mdl_file,
+                maxruntime=maxruntime,
+                mol_dir=mol_file,
                 d_file=output_csv,
                 convert3d=True,
                 retain3d=True,
@@ -159,7 +261,8 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
                 d_2d=descriptors,
                 d_3d=descriptors,
                 fingerprints=fingerprints,
-                sp_timeout=timeout
+                sp_timeout=timeout, 
+                threads=threads
             )
             break
         except RuntimeError as exception:
@@ -174,15 +277,16 @@ def from_mdl(mdl_file: str, output_csv: str = None, descriptors: bool = True,
             else:
                 continue
 
-    with open(output_csv, 'r', encoding='utf-8') as desc_file:
+    with open(output_csv, "r", encoding="utf-8") as desc_file:
         reader = DictReader(desc_file)
         rows = [row for row in reader]
     desc_file.close()
     if not save_csv:
         remove(output_csv)
     if len(rows) == 0:
-        raise RuntimeError('PaDEL-Descriptor returned no calculated values.' +
-                           ' Ensure the input structure is correct.')
+        raise RuntimeError("PaDEL-Descriptor returned no calculated values." +
+                           " Ensure the input structure is correct.")
     for row in rows:
-        del row['Name']
+        del row["Name"]
+
     return rows
