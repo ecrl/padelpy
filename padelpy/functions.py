@@ -9,6 +9,7 @@
 #
 
 import warnings
+import random
 # stdlib. imports
 from collections import OrderedDict
 from csv import DictReader
@@ -58,9 +59,10 @@ def from_smiles(smiles,
     if maxruntime != -1:
         maxruntime = maxruntime * 1000
 
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")#[:-3]
+    filename = timestamp + str(random.randint(1e8,1e9))
 
-    with open("{}.smi".format(timestamp), "w") as smi_file:
+    with open("{}.smi".format(filename), "w") as smi_file:
         if type(smiles) == str:
             smi_file.write(smiles)
         elif type(smiles) == list:
@@ -79,7 +81,7 @@ def from_smiles(smiles,
     for attempt in range(3):
         try:
             padeldescriptor(
-                mol_dir="{}.smi".format(timestamp),
+                mol_dir="{}.smi".format(filename),
                 d_file=output_csv,
                 convert3d=True,
                 retain3d=True,
@@ -94,7 +96,7 @@ def from_smiles(smiles,
             break
         except RuntimeError as exception:
             if attempt == 2:
-                remove("{}.smi".format(timestamp))
+                remove("{}.smi".format(filename))
                 if not save_csv:
                     sleep(0.5)
                     try:
@@ -105,7 +107,7 @@ def from_smiles(smiles,
             else:
                 continue
         except KeyboardInterrupt as kb_exception:
-            remove("{}.smi".format(timestamp))
+            remove("{}.smi".format(filename))
             if not save_csv:
                 try:
                     remove(output_csv)
@@ -118,7 +120,7 @@ def from_smiles(smiles,
         rows = [row for row in reader]
     desc_file.close()
 
-    remove("{}.smi".format(timestamp))
+    remove("{}.smi".format(filename))
     if not save_csv:
         remove(output_csv)
 
