@@ -22,7 +22,7 @@ Installation via cloned repository:
 ```
 $ git clone https://github.com/ecrl/padelpy
 $ cd padelpy
-$ python setup.py install
+$ pip install .
 ```
 
 PaDEL-Descriptor is bundled into PaDELPy, therefore an external installation/download of PaDEL-Descriptor is not necessary. There are currently no additional Python dependencies for PaDELPy, however it requires an installation of the [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) version 6+.
