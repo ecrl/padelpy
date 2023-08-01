@@ -23,3 +23,8 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/ecrl/padelpy"
 "Bug Tracker" = "https://github.com/ecrl/padelpy/issues"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
