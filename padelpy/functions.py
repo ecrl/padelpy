@@ -60,7 +60,7 @@ def from_smiles(smiles,
         maxruntime = maxruntime * 1000
 
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")#[:-3]
-    filename = timestamp + str(random.randint(1e8,1e9))
+    filename = timestamp + str(random.randint(int(1e8),int(1e9)))
 
     with open("{}.smi".format(filename), "w") as smi_file:
         if type(smiles) == str:
