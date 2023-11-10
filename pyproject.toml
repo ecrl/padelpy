@@ -7,7 +7,7 @@ include-package-data = true
 
 [project]
 name = "padelpy"
-version = "0.1.15"
+version = "0.1.16"
 authors = [
     { name="Travis Kessler", email="travis.j.kessler@gmail.com" },
 ]
