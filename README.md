@@ -54,6 +54,9 @@ descriptors = from_smiles(['CCC', 'CCCC'], threads = 1)
 
 # save descriptors to a CSV file
 _ = from_smiles('CCC', output_csv='descriptors.csv')
+
+# only calculate 2-D descriptors (some SMILES strings like 'C' can cause issues with 3-D descriptors)
+descriptors = from_smiles('C', descriptors_3d=False)
 ```
 
 ### MDL MolFile to Descriptors/Fingerprints
@@ -77,6 +80,9 @@ desc_fp = from_mdl('mols.mdl', threads=1)
 
 # save descriptors to a CSV file
 _ = from_mdl('mols.mdl', output_csv='descriptors.csv')
+
+# only calculate 2-D descriptors (some SMILES strings like 'C' can cause issues with 3-D descriptors)
+descriptors = from_mdl('mols.mdl', descriptors_3d=False)
 ```
 
 ### SDF to Descriptors/Fingerprints
@@ -102,6 +108,9 @@ desc_fp = from_mdl('mols.sdf', threads=1)
 
 # save descriptors to a CSV file
 _ = from_sdf('mols.sdf', output_csv='descriptors.csv')
+
+# only calculate 2-D descriptors (some SMILES strings like 'C' can cause issues with 3-D descriptors)
+descriptors = from_sdf('mols.sdf', descriptors_3d=False)
 ```
 
 ### Command Line Wrapper

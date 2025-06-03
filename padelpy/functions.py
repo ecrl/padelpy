@@ -31,6 +31,7 @@ __all__ = [
 def from_smiles(smiles,
                 output_csv: str = None,
                 descriptors: bool = True,
+                descriptors_3d: bool = None,
                 fingerprints: bool = False,
                 timeout: int = 60,
                 maxruntime: int = -1,
@@ -43,6 +44,7 @@ def from_smiles(smiles,
             SMILES strings
         output_csv (str): if supplied, saves descriptors to this CSV file
         descriptors (bool): if `True`, calculates descriptors
+        descriptors_3d (bool): if `False`, disable 3-D descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
         maxruntime (int): maximum running time per molecule in seconds. default=-1.
@@ -77,7 +79,12 @@ def from_smiles(smiles,
     if output_csv is None:
         save_csv = False
         output_csv = "{}.csv".format(timestamp)
-
+        
+    if descriptors_3d is None:
+        d_3d = descriptors
+    else:
+        d_3d = descriptors_3d
+        
     for attempt in range(3):
         try:
             padeldescriptor(
@@ -86,7 +93,7 @@ def from_smiles(smiles,
                 convert3d=True,
                 retain3d=True,
                 d_2d=descriptors,
-                d_3d=descriptors,
+                d_3d=d_3d,
                 fingerprints=fingerprints,
                 sp_timeout=timeout,
                 retainorder=True,
@@ -151,6 +158,7 @@ def from_smiles(smiles,
 def from_mdl(mdl_file: str,
              output_csv: str = None,
              descriptors: bool = True,
+             descriptors_3d: bool = None,
              fingerprints: bool = False,
              timeout: int = 60,
              maxruntime: int = -1,
@@ -163,6 +171,7 @@ def from_mdl(mdl_file: str,
         mdl_file (str): path to MDL file
         output_csv (str): if supplied, saves descriptors/fingerprints here
         descriptors (bool): if `True`, calculates descriptors
+        descriptors_3d (bool): if `False`, disable 3-D descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
         maxruntime (int): maximum running time per molecule in seconds. default=-1.
@@ -181,6 +190,7 @@ def from_mdl(mdl_file: str,
     rows = _from_mdl_lower(mol_file=mdl_file,
                            output_csv=output_csv,
                            descriptors=descriptors,
+                           descriptors_3d=descriptors_3d,
                            fingerprints=fingerprints,
                            timeout=timeout,
                            maxruntime=maxruntime,
@@ -192,6 +202,7 @@ def from_mdl(mdl_file: str,
 def from_sdf(sdf_file: str,
              output_csv: str = None,
              descriptors: bool = True,
+             descriptors_3d: bool = None,
              fingerprints: bool = False,
              timeout: int = 60,
              maxruntime: int = -1,
@@ -204,6 +215,7 @@ def from_sdf(sdf_file: str,
         sdf_file (str): path to sdf file
         output_csv (str): if supplied, saves descriptors/fingerprints here
         descriptors (bool): if `True`, calculates descriptors
+        descriptors_3d (bool): if `False`, disable 3-D descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
         maxruntime (int): maximum running time per molecule in seconds. default=-1.
@@ -223,6 +235,7 @@ def from_sdf(sdf_file: str,
     rows = _from_mdl_lower(mol_file=sdf_file,
                            output_csv=output_csv,
                            descriptors=descriptors,
+                           descriptors_3d=descriptors_3d,
                            fingerprints=fingerprints,
                            timeout=timeout,
                            maxruntime=maxruntime,
@@ -234,6 +247,7 @@ def from_sdf(sdf_file: str,
 def _from_mdl_lower(mol_file: str,
                     output_csv: str = None,
                     descriptors: bool = True,
+                    descriptors_3d: bool = None,
                     fingerprints: bool = False,
                     timeout: int = 60,
                     maxruntime: int = -1,
@@ -250,7 +264,12 @@ def _from_mdl_lower(mol_file: str,
         output_csv = "{}.csv".format(
             datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
         )
-
+        
+    if descriptors_3d is None:
+        d_3d = descriptors
+    else:
+        d_3d = descriptors_3d
+        
     for attempt in range(3):
         try:
             padeldescriptor(
@@ -261,7 +280,7 @@ def _from_mdl_lower(mol_file: str,
                 retain3d=True,
                 retainorder=True,
                 d_2d=descriptors,
-                d_3d=descriptors,
+                d_3d=d_3d,
                 fingerprints=fingerprints,
                 sp_timeout=timeout, 
                 threads=threads
