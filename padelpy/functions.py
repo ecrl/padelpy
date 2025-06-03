@@ -158,6 +158,7 @@ def from_smiles(smiles,
 def from_mdl(mdl_file: str,
              output_csv: str = None,
              descriptors: bool = True,
+             descriptors_3d: bool = None,
              fingerprints: bool = False,
              timeout: int = 60,
              maxruntime: int = -1,
@@ -170,6 +171,7 @@ def from_mdl(mdl_file: str,
         mdl_file (str): path to MDL file
         output_csv (str): if supplied, saves descriptors/fingerprints here
         descriptors (bool): if `True`, calculates descriptors
+        descriptors_3d (bool): if `False`, disable 3-D descriptors
         fingerprints (bool): if `True`, calculates fingerprints
         timeout (int): maximum time, in seconds, for conversion
         maxruntime (int): maximum running time per molecule in seconds. default=-1.
@@ -188,6 +190,7 @@ def from_mdl(mdl_file: str,
     rows = _from_mdl_lower(mol_file=mdl_file,
                            output_csv=output_csv,
                            descriptors=descriptors,
+                           descriptors_3d=descriptors_3d,
                            fingerprints=fingerprints,
                            timeout=timeout,
                            maxruntime=maxruntime,
