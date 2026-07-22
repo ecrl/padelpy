@@ -38,6 +38,7 @@ dev = [
     "ruff>=0.8",
     "pre-commit>=4",
     "build>=1.2",
+    "pip-audit>=2.7",
 ]
 docs = [
     "sphinx>=7",

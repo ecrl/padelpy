@@ -7,7 +7,10 @@ body:
     attributes:
       value: |
         Thanks for filing a report. Include environment details so maintainers can reproduce the issue.
-        For security vulnerabilities, follow [SECURITY.md](https://github.com/ecrl/padelpy/blob/master/SECURITY.md) instead.
+        For security vulnerabilities, use
+        [private advisory reporting](https://github.com/ecrl/padelpy/security/advisories/new)
+        or follow [SECURITY.md](https://github.com/ecrl/padelpy/blob/master/SECURITY.md).
+        Do not open a public issue for security reports.
   - type: textarea
     id: description
     attributes:

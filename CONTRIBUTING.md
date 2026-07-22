@@ -76,6 +76,17 @@ gate for the compatibility series.
 Use GitHub Issues. Include error text, OS, Python version, and `java -version`
 when reporting runtime failures.
 
+## Security and supply chain
+
+- Follow [SECURITY.md](SECURITY.md) for vulnerability reports (GitHub private
+  advisories preferred; email accepted).
+- CI runs `pip-audit --strict` on the default install and `[dev]` extras.
+  Locally: `pip install -e ".[dev]" && pip-audit --strict`.
+- Vendored PaDEL artifact digests live in
+  `docs/security/vendored-artifacts.sha256`. After intentional bundle changes,
+  regenerate that file and update the threat-model notes in `SECURITY.md`
+  (JAR upgrades also require an approved parity plan).
+
 ## Publishing releases (maintainers)
 
 PyPI uploads use **Trusted Publishing (OIDC)** via
