@@ -37,6 +37,31 @@ jobs:
       - name: Ruff format
         run: ruff format --check src tests
 
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package (default user path) and pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install .
+          pip install pip-audit
+
+      - name: Audit default install
+        run: pip-audit --strict
+
+      - name: Install and audit development extras
+        run: |
+          pip install -e ".[dev]"
+          pip-audit --strict
+
   test:
     runs-on: ubuntu-latest
     strategy:

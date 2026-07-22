@@ -8,6 +8,20 @@ within the compatibility policy described in [API_STABILITY.md](API_STABILITY.md
 
 ## [Unreleased]
 
+### Added
+
+- CI `audit` job running `pip-audit --strict` on the default install and
+  `[dev]` extras; `pip-audit` listed under `[dev]`
+- SHA-256 inventory of vendored PaDEL artifacts
+  (`docs/security/vendored-artifacts.sha256`) and an expanded threat model in
+  `SECURITY.md`
+- GitHub private vulnerability reporting documented alongside email disclosure
+
+### Changed
+
+- PyPI publish workflow pins `pypa/gh-action-pypi-publish` to a full commit SHA
+  (v1.14.1)
+
 ## [0.1.17] - 2026-07-22
 
 API-compatible modernization release. Public callables remain
