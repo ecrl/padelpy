@@ -86,6 +86,12 @@ when reporting runtime failures.
   `docs/security/vendored-artifacts.sha256`. After intentional bundle changes,
   regenerate that file and update the threat-model notes in `SECURITY.md`
   (JAR upgrades also require an approved parity plan).
+- Third-party notices for the bundled PaDEL/CDK tree are summarized in
+  [NOTICE](NOTICE); full license texts remain under
+  `src/padelpy/PaDEL-Descriptor/license/`.
+- Coverage uploads to Codecov from the Ubuntu Python 3.12 CI leg when the
+  repository secret `CODECOV_TOKEN` is configured (optional until Codecov org
+  access is finalized).
 
 ## Publishing releases (maintainers)
 

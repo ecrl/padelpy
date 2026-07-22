@@ -1,0 +1,34 @@
+NOTICE
+======
+
+padelpy
+Copyright (c) Travis Kessler and contributors
+Licensed under the MIT License (see LICENSE).
+
+This distribution redistributes third-party software used by the bundled
+PaDEL-Descriptor engine. Upstream license texts ship with the package under:
+
+  src/padelpy/PaDEL-Descriptor/license/
+
+Third-party components include (non-exhaustive; see the license directory and
+JAR manifests for authoritative notices):
+
+  - PaDEL-Descriptor and related libPaDEL* libraries
+    License: GNU Affero General Public License v3 (see license/LICENSE.txt)
+    Reference: Yap CW. PaDEL-Descriptor. J Comput Chem. 2011;32(7):1466-1474.
+    DOI: 10.1002/jcc.21707
+
+  - Chemistry Development Kit (CDK) and related libraries
+    Copyright 1997-2007 The CDK Development Team and contributors
+    License: GNU Lesser General Public License v2.1
+    (see license/lgpl-2.1.txt, license/lgpl.license, license/README - CDK)
+
+  - Additional supporting JARs under src/padelpy/PaDEL-Descriptor/lib/
+    (including, among others, Guava, Apache Commons CLI, and Ambition SMARTS
+    libraries). Each JAR retains its own copyright and license terms as
+    distributed by its upstream project.
+
+Integrity digests for vendored artifacts are recorded in
+docs/security/vendored-artifacts.sha256. Upgrades to the bundled JAR set are
+intentionally frozen for descriptor parity unless an approved dual-run plan is
+in place (see docs/design/DESIGN.md and SECURITY.md).
