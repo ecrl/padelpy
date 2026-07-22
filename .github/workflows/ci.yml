@@ -3,10 +3,13 @@ name: CI
 on:
   push:
     branches:
-      - release/v0.1.17
+      - main
+      - master
+      - "release/**"
   pull_request:
     branches:
-      - release/v0.1.17
+      - main
+      - master
 
 permissions:
   contents: read
