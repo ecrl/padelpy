@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the metadata below.
+  Please also cite the PaDEL-Descriptor engine (Yap, 2011) when reporting
+  descriptor or fingerprint results produced through padelpy.
+type: software
+title: padelpy
+abstract: >-
+  A Python wrapper for the PaDEL-Descriptor molecular descriptor and
+  fingerprint calculation software.
+authors:
+  - family-names: Kessler
+    given-names: Travis
+    email: travis.j.kessler@gmail.com
+repository-code: "https://github.com/ecrl/padelpy"
+url: "https://github.com/ecrl/padelpy"
+license: MIT
+version: "0.1.17"
+keywords:
+  - cheminformatics
+  - molecular descriptors
+  - fingerprints
+  - PaDEL-Descriptor
+  - QSPR
+references:
+  - type: article
+    authors:
+      - family-names: Yap
+        given-names: Chun Wei
+    title: >-
+      PaDEL-Descriptor: An open source software to calculate molecular
+      descriptors and fingerprints
+    year: 2011
+    month: 5
+    journal: Journal of Computational Chemistry
+    volume: "32"
+    issue: "7"
+    start: 1466
+    end: 1474
+    doi: 10.1002/jcc.21707
+    identifiers:
+      - type: other
+        value: "PMID:21425294"
+        description: PubMed identifier
+      - type: url
+        value: "https://pubmed.ncbi.nlm.nih.gov/21425294/"

@@ -5,7 +5,7 @@
 **Package:** `padelpy` (PyPI / import name unchanged)  
 **License:** MIT (unchanged)  
 **Current release baseline:** `0.1.16` (2023-11-10)  
-**First modernization tag:** `0.1.17` (after Phases A and B)
+**Modernization release tag:** `0.1.17` (after Phases A–E complete)
 
 ---
 
@@ -82,7 +82,7 @@ Numbered goals are testable exit criteria for the modernization program.
 5. **G5 — Internal reliability.** Temp files use secure temporary directories; subprocess uses an argv list and proper timeouts; CSV encoding failures raise clear errors of the existing exception family where applicable; CWD is not polluted on success paths.
 6. **G6 — Documentation.** README corrected; Sphinx site with install + API autodoc builds with warnings as errors; Java prerequisite documented for current JREs.
 7. **G7 — Governance.** CONTRIBUTING, CHANGELOG, CITATION.cff, SECURITY, and issue/PR templates present.
-8. **G8 — Release path.** Trusted publishing (OIDC) replaces long-lived tokens; a compatibility release ships only after G1–G7 gates for that milestone.
+8. **G8 — Release path.** Trusted publishing (OIDC) replaces long-lived tokens; a compatibility release ships only after G1–G7 gates for that milestone, with all Phases A–E work verified locally and repository CI triggered by push to the release branch (§11.6).
 9. **G9 — Issue triage readiness.** Top reliability issues have either a regression test + fix or a documented wontfix/limitation tied to PaDEL upstream behavior.
 
 ---
@@ -148,7 +148,7 @@ PaDELPy remains a **thin layered wrapper**. Modernization may refine module boun
 
 **Dependency rule:** L2 may import L1; L1 must not import L2; neither layer imports application code outside the package. New helpers (e.g. temp-file utilities) live at L1/L2 without becoming public unless re-exported deliberately.
 
-**Layout decision (approved):** Migrate to `src/padelpy/` in **Phase B**. The import name remains `import padelpy`. Package data must continue to ship the vendored `PaDEL-Descriptor/` tree in sdists and wheels. Packaging tests in Phase B verify JAR presence in the built wheel before tagging `0.1.17`.
+**Layout decision (approved):** Migrate to `src/padelpy/` in **Phase B**. The import name remains `import padelpy`. Package data must continue to ship the vendored `PaDEL-Descriptor/` tree in sdists and wheels. Packaging tests in Phase B verify JAR presence in the built wheel before the Phase E `0.1.17` release.
 
 ---
 
@@ -235,8 +235,8 @@ Descriptor values remain **strings as returned by PaDEL CSV** unless tests today
 
 ### 8.3 Stability policy
 
-1. **Patch (`0.1.x`):** bugfixes and tooling; descriptor oracles must match.
-2. **Minor (`0.2.0`):** internal hardening, docs, governance; still API-compatible; oracles must match.
+1. **Patch (`0.1.x`):** bugfixes, tooling, internal hardening, and docs that preserve the frozen API; descriptor oracles must match. This modernization program ships as **`0.1.17`** after Phases A–E.
+2. **Minor (`0.2.0` and later):** reserved for future additive, still API-compatible work after `0.1.17`; oracles must match.
 3. **Major (`1.0.0` or higher):** only after explicit stability promise; still preferably API-compatible. JAR upgrades or intentional descriptor-schema changes require dual-run evidence and a clear migration note.
 
 ---
@@ -320,9 +320,11 @@ Public numeric checks use `pytest.approx` with tolerances consistent with curren
 - Sphinx `-W` build in CI after Phase D.
 - Optional single example notebook under `examples/` demonstrating `from_smiles` (smoke via nbmake only if added; not a Phase A blocker).
 
-### 11.6 CI gates
+### 11.6 Local verification and CI gates
 
-Lint (ruff) → tests + coverage → (docs build once Sphinx exists). Release workflow builds artifacts and publishes via OIDC.
+**Local-first (Phases A–E):** All phase work must be completed and verified **locally** before any push intended for release. Agents and maintainers treat local commands as the definition of done for each phase exit (lint, tests + coverage, docs build once Sphinx exists, `python -m build` when packaging is in scope). Do not rely on remote CI to discover failures during A–E implementation.
+
+**Remote CI (release branch):** The repository CI workflow (lint + test matrix + docs when present) is expected to run when changes are **pushed to the release branch**. That push is a confirmation gate after local verification, not a substitute for it. Release workflow builds artifacts and publishes via OIDC.
 
 ---
 
@@ -331,7 +333,7 @@ Lint (ruff) → tests + coverage → (docs build once Sphinx exists). Release wo
 | Concern | Decision |
 |---------|----------|
 | Build backend | setuptools (current) via `pyproject.toml`; keep unless hatchling migration is zero-risk |
-| Layout | `src/padelpy/` in Phase B (required before `0.1.17`) |
+| Layout | `src/padelpy/` in Phase B (required before the `0.1.17` release) |
 | Python versions | `requires-python = ">=3.11"`; CI on 3.11, 3.12, 3.13 |
 | Java (CI) | Eclipse Temurin 17; document runtime requirement as Java 8+ |
 | License | MIT (project) + retain PaDEL/CDK third-party license files in the bundle |
@@ -346,15 +348,15 @@ Lint (ruff) → tests + coverage → (docs build once Sphinx exists). Release wo
 
 ## 13. Roadmap (Phases A–E)
 
-Phases map to implementation milestones. Version tags are recommendations; exact numbers may shift if oracle work surfaces unexpected breaks.
+Phases map to implementation milestones. The sole PyPI tag for this program is **`0.1.17`**, cut in Phase E after Phases A–D exit. Intermediate work stays on the `0.1.16` tip (no interim tags). **All Phases A–E work must be done and verified locally** (§11.6); repository CI runs when the completed work is pushed to the release branch.
 
 | Phase | Theme | Primary goals | Suggested version |
 |-------|-------|---------------|-------------------|
-| **A** | Freeze the contract | G1 — golden oracles, signature locks, `from_mdl` coverage; path to **90%** coverage | Commits on `0.1.16` tip (no tag yet) |
-| **B** | Modernize the shell | G2, G3, G4 — `src/` layout, packaging, ruff, 90% coverage gate, CI matrix (Py 3.11–3.13 + Temurin 17), `__version__` | Tag **`0.1.17`** after A+B |
-| **C** | Harden internals | G5, G9 — tempfile, subprocess, encoding, issue-driven fixes behind oracles | `0.1.18` or fold into `0.2.0` |
-| **D** | Docs and maintainer surface | G6, G7 — README fixes, Sphinx, governance files | With `0.2.0` |
-| **E** | Compatibility release series | G8 — trusted publishing for `0.1.17` and later; changelog discipline | `0.1.17` first; `0.2.0` after C–D; later `1.0.0` only with explicit stability promise |
+| **A** | Freeze the contract | G1 — golden oracles, signature locks, `from_mdl` coverage; path to **90%** coverage | Commits on `0.1.16` tip (no tag) |
+| **B** | Modernize the shell | G2, G3, G4 — `src/` layout, packaging, ruff, 90% coverage gate, CI matrix (Py 3.11–3.13 + Temurin 17), `__version__` | Commits on tip (no tag) |
+| **C** | Harden internals | G5, G9 — tempfile, subprocess, encoding, issue-driven fixes behind oracles | Commits on tip (no tag) |
+| **D** | Docs and maintainer surface | G6, G7 — README fixes, Sphinx, governance files | Commits on tip (no tag) |
+| **E** | Compatibility release | G8 — trusted publishing; changelog; tag and publish **`0.1.17`** | Tag **`0.1.17`** after A–D; later `1.0.0` only with explicit stability promise |
 
 ### 13.1 Phase A — Freeze the contract
 
@@ -376,12 +378,12 @@ Deliverables:
 Deliverables:
 
 1. Migrate package tree to `src/padelpy/` (including vendored PaDEL bundle); verify wheel contains JARs.
-2. `pyproject.toml` extras (`[dev]`, `[docs]`), classifiers for 3.11–3.13, version aligned for `0.1.17`.
+2. `pyproject.toml` extras (`[dev]`, `[docs]`), classifiers for 3.11–3.13; leave package version at `0.1.16` until Phase E.
 3. Fix version import (`importlib.metadata`); export `__version__`.
 4. ruff + pre-commit + coverage config with **90%** fail-under gate.
 5. Replace/extend `run_tests.yml` with a proper CI workflow (PR + push; Python 3.11–3.13; Temurin 17).
 
-**Exit:** `pip install -e ".[dev]"` works; CI green on 3.11–3.13; coverage ≥90%; ready to tag `0.1.17`.
+**Exit:** Locally, `pip install -e ".[dev]"` works; ruff + pytest with coverage ≥90% pass; CI workflow files are present and correct for the release-branch matrix (3.11–3.13 + Temurin 17); ready for Phases C–E. Remote CI confirmation occurs when pushed to the release branch (§11.6).
 
 ### 13.3 Phase C — Harden internals
 
@@ -409,17 +411,19 @@ Deliverables:
 
 **Exit:** `sphinx-build -W` passes; governance checklist complete.
 
-### 13.5 Phase E — Compatibility release series
+### 13.5 Phase E — Compatibility release (`0.1.17`)
 
-**Intent:** Ship modernization to PyPI safely.
+**Intent:** Ship the completed modernization (Phases A–D) to PyPI as a single compatibility release.
 
 Deliverables:
 
-1. For **`0.1.17`** (immediately after Phases A+B): version bump, release notes/CHANGELOG entry, refresh publish workflow (prefer trusted publishing if credentials allow; otherwise document token path), tag and publish.
-2. Later **`0.2.0`**: after Phases C–D land; oracles still green.
-3. Post-release: monitor issues; plan `1.0.0` only after sustained stability.
+1. Confirm Phases A–D are **locally verified** (lint, tests + coverage, docs `-W`, build) per §11.6.
+2. Refresh publish workflow (prefer trusted publishing / OIDC if credentials allow; otherwise document token path).
+3. Bump version to **`0.1.17`**, write CHANGELOG covering contract suite, packaging/CI, internal hardening, and docs/governance.
+4. Push the release-ready commit(s) to the **release branch** so repository CI triggers; proceed to tag and publish only after local verification is complete (and after CI on the release branch is green when that push is used).
+5. Post-release: monitor issues; plan a future `1.0.0` only after sustained stability (out of scope for this program).
 
-**Exit (0.1.17):** PyPI artifact installable; smoke test from clean venv + Java; Phase A oracles pass on the release commit.
+**Exit (0.1.17):** Phases A–E work done and verified locally; release-branch CI has run (when pushed); PyPI artifact installable; smoke test from clean venv + Java; Phase A oracles pass on the release commit.
 
 ```mermaid
 flowchart LR
@@ -439,8 +443,8 @@ flowchart LR
 
 | # | Decision |
 |---|----------|
-| Q1 | Migrate to `src/padelpy/` in **Phase B** (required before `0.1.17`). |
-| Q2 | Tag **`0.1.17`** after Phases A and B complete; `0.2.0` reserved for post–C/D work. |
+| Q1 | Migrate to `src/padelpy/` in **Phase B** (required before the `0.1.17` release). |
+| Q2 | Tag **`0.1.17`** once as the final modernization release after Phases A–E; no interim tags (`0.1.18` / `0.2.0`) in this program. |
 | Q4 | Document Java 8+; CI uses **Eclipse Temurin 17**. |
 | Q7 | Initial coverage floor is **90%** on Python package modules. |
 
@@ -469,7 +473,9 @@ flowchart LR
 ## Appendix B — Approval checklist
 
 - [x] Maintainer approves API freeze and non-goals (§2.3, §8)
-- [x] Maintainer answers Q1, Q2, Q4, Q7 (`src/` in B; tag `0.1.17` after A+B; Temurin 17; 90% coverage)
-- [ ] Design accepted → create implementation blueprint and execute Phase A first
+- [x] Maintainer answers Q1, Q2, Q4, Q7 (`src/` in B; single tag `0.1.17` after A–E; Temurin 17; 90% coverage)
+- [x] Design accepted → create implementation blueprint
+- [x] Execute Phase A first (start with contract fixtures / signature locks)
 - [ ] No implementation of B–E until Phase A oracles exist (recommended gate)
-- [ ] Tag `0.1.17` only when Phases A and B exit criteria pass
+- [ ] All Phases A–E work done and verified locally before release push (§11.6)
+- [ ] Tag `0.1.17` only when Phases A–D exit criteria pass and release-branch CI has been triggered by push (Phase E)

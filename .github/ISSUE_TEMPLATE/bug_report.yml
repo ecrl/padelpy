@@ -1,0 +1,60 @@
+name: Bug report
+description: Report unexpected behavior or a crash in padelpy
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a report. Include environment details so maintainers can reproduce the issue.
+        For security vulnerabilities, follow [SECURITY.md](https://github.com/ecrl/padelpy/blob/master/SECURITY.md) instead.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong? What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal example (SMILES, file type, or `padeldescriptor` call).
+      render: python
+    validations:
+      required: true
+  - type: input
+    id: padelpy-version
+    attributes:
+      label: padelpy version
+      placeholder: e.g. 0.1.16
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: e.g. 3.12.7
+    validations:
+      required: true
+  - type: input
+    id: java-version
+    attributes:
+      label: Java version (`java -version`)
+      placeholder: e.g. openjdk 17.0.x
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. macOS 15 / Ubuntu 22.04
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Full traceback or PaDEL stderr if available.
+    validations:
+      required: false
