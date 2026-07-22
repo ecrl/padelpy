@@ -27,6 +27,8 @@ within the compatibility policy described in [API_STABILITY.md](API_STABILITY.md
 - PyPI publish workflow pins `pypa/gh-action-pypi-publish` to a full commit SHA
   (v1.14.1) and runs the test suite before uploading
 - CI uses concurrency groups and pip caching; README links live Read the Docs
+- Codecov uploads authenticate with GitHub Actions OIDC instead of
+  `CODECOV_TOKEN`
 
 ## [0.1.17] - 2026-07-22
 
