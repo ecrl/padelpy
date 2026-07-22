@@ -5,7 +5,7 @@ maintainers and continuous integration.
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.10+
 - A Java JRE **8+** on `PATH` (`java -version` should succeed). CI uses Eclipse
   Temurin 17 for integration tests that call the bundled PaDEL engine.
 - Git

@@ -18,7 +18,7 @@ Or from a clone of the repository:
 Requirements
 ------------
 
-- Python 3.11 or newer (see package classifiers)
+- Python 3.10 or newer (see package classifiers)
 - A system Java JRE **8+** on ``PATH`` such that ``java -version`` succeeds
 
 Continuous integration uses Eclipse Temurin 17. A convenient source of JREs is

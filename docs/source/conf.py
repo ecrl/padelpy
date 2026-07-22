@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Editable / src layout for autodoc
@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 project = "padelpy"
 author = "Travis Kessler"
-copyright = f"{datetime.now(UTC).year}, {author}"
+copyright = f"{datetime.now(timezone.utc).year}, {author}"
 
 extensions = [
     "sphinx.ext.autodoc",

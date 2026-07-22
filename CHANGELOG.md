@@ -20,8 +20,9 @@ Java JRE **8+** on `PATH`. Bundled PaDEL JARs are unchanged.
   `API_STABILITY.md`
 - `src/padelpy/` packaging layout, `[dev]` / `[docs]` extras, ruff, pre-commit,
   and coverage gate (≥90%)
-- CI workflow for Python 3.11–3.13 with Eclipse Temurin 17 (lint, tests, docs)
+- CI workflow for Python 3.10–3.13 with Eclipse Temurin 17 (lint, tests, docs)
   on the `release/v0.1.17` branch
+- Official support for Python 3.10+ (`requires-python = ">=3.10"`)
 - Packaging tests that assert PaDEL JAR and license files ship in wheels/sdists
 - Sphinx + Furo documentation (installation, quickstart, API, stability policy)
   and Read the Docs config

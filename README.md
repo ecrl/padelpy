@@ -30,7 +30,7 @@ pip install .
 
 **Requirements**
 
-- Python 3.11+ (see package classifiers)
+- Python 3.10+ (see package classifiers)
 - A system [Java](https://adoptium.net/) JRE **8+** on `PATH`
   (`java -version` should succeed). Continuous integration uses Eclipse Temurin 17.
 

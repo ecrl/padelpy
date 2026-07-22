@@ -7,6 +7,8 @@
 # Contains the `padeldescriptor` function, a wrapper for PaDEL-Descriptor
 #
 
+from __future__ import annotations
+
 # stdlib. imports
 from os.path import abspath, dirname, join
 from shutil import which
