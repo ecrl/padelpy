@@ -29,6 +29,8 @@ within the compatibility policy described in [API_STABILITY.md](API_STABILITY.md
 - CI uses concurrency groups and pip caching; README links live Read the Docs
 - Codecov uploads authenticate with GitHub Actions OIDC instead of
   `CODECOV_TOKEN`
+- README Codecov badge removed temporarily until Codecov activates
+  `ecrl/padelpy`
 
 ## [0.1.17] - 2026-07-22
 
