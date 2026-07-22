@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an enhancement within the frozen public API policy
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The public API (`from_smiles`, `from_mdl`, `from_sdf`, `padeldescriptor`,
+        `__version__`) is under a compatibility freeze. See
+        [API_STABILITY.md](https://github.com/ecrl/padelpy/blob/master/API_STABILITY.md).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Desired behavior, without requiring unrelated JAR upgrades if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

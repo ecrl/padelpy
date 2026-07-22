@@ -4,191 +4,163 @@
 
 [![GitHub version](https://badge.fury.io/gh/ecrl%2Fpadelpy.svg)](https://badge.fury.io/gh/ecrl%2Fpadelpy)
 [![PyPI version](https://badge.fury.io/py/padelpy.svg)](https://badge.fury.io/py/padelpy)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ecrl/padelpy/master/LICENSE.txt)
+[![GitHub license](https://img.shields.io/github/license/ecrl/padelpy)](https://github.com/ecrl/padelpy/blob/master/LICENSE)
 
-PaDELPy provides a Python wrapper for the [PaDEL-Descriptor](https://pubmed.ncbi.nlm.nih.gov/21425294/) molecular descriptor calculation software. It was created to allow direct access to the PaDEL-Descriptor command-line interface via Python.
+PaDELPy provides a Python wrapper for the
+[PaDEL-Descriptor](https://pubmed.ncbi.nlm.nih.gov/21425294/) molecular
+descriptor calculation software. It exposes the PaDEL-Descriptor command-line
+interface to Python for computing descriptors and fingerprints from SMILES,
+MDL MolFiles, and SDF files.
 
 ## Installation
 
-Installation via pip:
+Install from PyPI:
 
-```
-$ pip install padelpy
-```
-
-Installation via cloned repository:
-
-```
-$ git clone https://github.com/ecrl/padelpy
-$ cd padelpy
-$ pip install .
+```bash
+pip install padelpy
 ```
 
-PaDEL-Descriptor is bundled into PaDELPy, therefore an external installation/download of PaDEL-Descriptor is not necessary. There are currently no additional Python dependencies for PaDELPy, however it requires an installation of the [Java JRE](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) version 6+.
+Or from a clone of this repository:
 
-## Basic Usage
+```bash
+git clone https://github.com/ecrl/padelpy
+cd padelpy
+pip install .
+```
 
-In addition to providing a complete interface between Python and PaDEL-Descriptor's command line tool, PaDELPy offers two functions to acquire descriptors/fingerprints within Python - obtaining descriptors/fingerprints from a SMILES string, and obtaining descriptors/fingerprints from an MDL MolFile.
+**Requirements**
 
-### SMILES to Descriptors/Fingerprints
+- Python 3.10+ (see package classifiers)
+- A system [Java](https://adoptium.net/) JRE **8+** on `PATH`
+  (`java -version` should succeed). Continuous integration uses Eclipse Temurin 17.
 
-The "from_smiles" function accepts a SMILES string or list of SMILES strings as an argument, and returns a Python dictionary with descriptor/fingerprint names/values as keys/values respectively - if multiple SMILES strings are supplied, "from_smiles" returns a list of dictionaries.
+PaDEL-Descriptor is bundled with PaDELPy, so a separate PaDEL download is not
+required. The project has no default Python dependencies beyond the standard
+library. Wheels are large (approximately 20+ MB) because they include the
+vendored PaDEL JAR and libraries.
+
+## Related projects
+
+PaDELPy is a thin wrapper around the PaDEL-Descriptor Java engine. Other tools
+compute related molecular features with different engines or APIs:
+
+- [Mordred](https://doi.org/10.1186/s13321-018-0258-y) — RDKit-based descriptor
+  calculator (different engine and dependency stack)
+- [RDKit](https://www.rdkit.org/) descriptors and fingerprints — core
+  cheminformatics toolkit (different descriptor set)
+- [padelpy2](https://github.com/Cognitive-Chemistry-Labs/padelpy2) — alternate
+  PaDEL wrapper with an RDKit/pandas-oriented API (not drop-in compatible)
+
+## Basic usage
+
+PaDELPy provides helpers for SMILES, MDL MolFile, and SDF inputs, plus a
+lower-level `padeldescriptor` wrapper for direct CLI control.
+
+### SMILES to descriptors / fingerprints
+
+`from_smiles` accepts a SMILES string or a list of SMILES strings. A single
+input returns a mapping of descriptor or fingerprint names to values; a list
+returns a list of such mappings.
 
 ```python
 from padelpy import from_smiles
 
-# calculate molecular descriptors for propane
-descriptors = from_smiles('CCC')
+# molecular descriptors for propane
+descriptors = from_smiles("CCC")
 
-# calculate molecular descriptors for propane and butane
-descriptors = from_smiles(['CCC', 'CCCC'])
+# propane and butane
+descriptors = from_smiles(["CCC", "CCCC"])
 
-# in addition to descriptors, calculate PubChem fingerprints
-desc_fp = from_smiles('CCC', fingerprints=True)
+# descriptors plus PubChem fingerprints
+desc_fp = from_smiles("CCC", fingerprints=True)
 
-# only calculate fingerprints
-fingerprints = from_smiles('CCC', fingerprints=True, descriptors=False)
+# fingerprints only
+fingerprints = from_smiles("CCC", fingerprints=True, descriptors=False)
 
-# setting the number of threads, this uses one cpu thread to compute descriptors
-descriptors = from_smiles(['CCC', 'CCCC'], threads = 1)
+# one worker thread
+descriptors = from_smiles(["CCC", "CCCC"], threads=1)
 
-# save descriptors to a CSV file
-_ = from_smiles('CCC', output_csv='descriptors.csv')
+# also write a CSV
+_ = from_smiles("CCC", output_csv="descriptors.csv")
 ```
 
-### MDL MolFile to Descriptors/Fingerprints
+### MDL MolFile to descriptors / fingerprints
 
-The "from_mdl" function accepts a filepath (to an MDL MolFile) as an argument, and returns a list. Each list element is a dictionary with descriptors/fingerprints corresponding to each supplied molecule (indexed as they appear in the MolFile).
+`from_mdl` accepts a path to an MDL MolFile and returns a list of mappings, one
+per molecule in file order.
 
 ```python
 from padelpy import from_mdl
 
-# calculate molecular descriptors for molecules in `mols.mdl`
-descriptors = from_mdl('mols.mdl')
-
-# in addition to descriptors, calculate PubChem fingerprints
-desc_fp = from_mdl('mols.mdl', fingerprints=True)
-
-# only calculate fingerprints
-fingerprints = from_mdl('mols.mdl', fingerprints=True, descriptors=False)
-
-# setting the number of threads, this uses one cpu thread to compute descriptors
-desc_fp = from_mdl('mols.mdl', threads=1)
-
-# save descriptors to a CSV file
-_ = from_mdl('mols.mdl', output_csv='descriptors.csv')
+descriptors = from_mdl("mols.mdl")
+desc_fp = from_mdl("mols.mdl", fingerprints=True)
+fingerprints = from_mdl("mols.mdl", fingerprints=True, descriptors=False)
+desc_fp = from_mdl("mols.mdl", threads=1)
+_ = from_mdl("mols.mdl", output_csv="descriptors.csv")
 ```
 
-### SDF to Descriptors/Fingerprints
+### SDF to descriptors / fingerprints
 
-The "from_sdf" function accepts a filepath as an argument, and returns a list.
-Each list element is a dictionary with descriptors/fingerprints corresponding to each supplied
-molecule (indexed as they appear in the SDF file).
+`from_sdf` accepts a path to an SDF file and returns a list of mappings, one per
+molecule in file order.
 
 ```python
 from padelpy import from_sdf
 
-# calculate molecular descriptors for molecules in `mols.sdf`
-descriptors = from_sdf('mols.sdf')
-
-# in addition to descriptors, calculate PubChem fingerprints
-desc_fp = from_sdf('mols.sdf', fingerprints=True)
-
-# only calculate fingerprints
-fingerprints = from_sdf('mols.sdf', fingerprints=True, descriptors=False)
-
-# setting the number of threads, this uses one cpu thread to compute descriptors
-desc_fp = from_mdl('mols.sdf', threads=1)
-
-# save descriptors to a CSV file
-_ = from_sdf('mols.sdf', output_csv='descriptors.csv')
+descriptors = from_sdf("mols.sdf")
+desc_fp = from_sdf("mols.sdf", fingerprints=True)
+fingerprints = from_sdf("mols.sdf", fingerprints=True, descriptors=False)
+desc_fp = from_sdf("mols.sdf", threads=1)
+_ = from_sdf("mols.sdf", output_csv="descriptors.csv")
 ```
 
-### Command Line Wrapper
+### Command-line wrapper
 
-Alternatively, you can have more control over PaDEL-Descriptor with the command-line wrapper function. Any combination of arguments supported by PaDEL-Descriptor can be accepted by the "padeldescriptor" function.
+`padeldescriptor` forwards keyword arguments to the PaDEL-Descriptor CLI.
+Any combination of supported flags may be supplied.
 
 ```python
 from padelpy import padeldescriptor
 
-# to supply a configuration file
-padeldescriptor(config='\\path\\to\\config')
+padeldescriptor(config="path/to/config")
+padeldescriptor(mol_dir="molecules.mdl", d_file="descriptors.csv")
+padeldescriptor(mol_dir="molecules.sdf", d_file="descriptors.csv")
+padeldescriptor(mol_dir="molecules.smi", d_file="descriptors.csv")
+padeldescriptor(mol_dir="path/to/mols/", d_file="descriptors.csv")
 
-# to supply an input (MDL) and output file
-padeldescriptor(mol_dir='molecules.mdl', d_file='descriptors.csv')
-
-# to supply an input (SDF) and output file
-padeldescriptor(mol_dir='molecules.sdf', d_file='descriptors.csv')
-
-# a SMILES file can be supplied
-padeldescriptor(mol_dir='molecules.smi', d_file='descriptors.csv')
-
-# a path to a directory containing structural files can be supplied
-padeldescriptor(mol_dir='\\path\\to\\mols\\', d_file='descriptors.csv')
-
-# to calculate 2-D and 3-D descriptors
-padeldescriptor(d_2d=True, d_3d=True)
-
-# to calculate PubChem fingerprints
-padeldescriptor(fingerprints=True)
-
-# to convert molecule into a 3-D structure
-padeldescriptor(convert3d=True)
-
-# to supply a descriptortypes file
-padeldescriptor(descriptortype='\\path\\to\\descriptortypes')
-
-# to detect aromaticity
-padeldescriptor(detectaromaticity=True)
-
-# to calculate fingerprints
-padeldescriptor(fingerprints=True)
-
-# to save process status to a log file
-padeldescriptor(log=True)
-
-# to remove salts from the molecule(s)
-padeldescriptor(removesalt=True)
-
-# to retain 3-D coordinates when standardizing
-padeldescriptor(retain3d=True)
-
-# to retain order (output same order as input)
-padeldescriptor(retainorder=True)
-
-# to standardize nitro groups to N(:O):O
-padeldescriptor(standardizenitro=True)
-
-# to standardize tautomers
-padeldescriptor(standardizetautomers=True)
-
-# to specify a SMIRKS tautomers file
-padeldescriptor(tautomerlist='\\path\\to\\tautomers\\')
-
-# to use filenames as molecule names
-padeldescriptor(usefilenameasmolname=True)
-
-# to set the maximum number of compounds in a resulting descriptors file
-padeldescriptor(maxcpdperfile=32)
-
-# to set the maximum runtime (in mS) per molecule
-padeldescriptor(maxruntime=10000)
-
-# to set the maximum number of waiting jobs in the queue
-padeldescriptor(waitingjobs=10)
-
-# to set the maximum number of threads used
-padeldescriptor(threads=2)
-
-# to prevent padel-splash image from loading.
-padeldescriptor(headless=True)
-
+padeldescriptor(
+    mol_dir="molecules.smi",
+    d_file="descriptors.csv",
+    d_2d=True,
+    d_3d=True,
+    fingerprints=True,
+    convert3d=True,
+    descriptortypes="path/to/descriptortypes",
+    detectaromaticity=True,
+    log=True,
+    removesalt=True,
+    retain3d=True,
+    retainorder=True,
+    standardizenitro=True,
+    standardizetautomers=True,
+    tautomerlist="path/to/tautomers",
+    usefilenameasmolname=True,
+    maxcpdperfile=32,
+    maxruntime=10000,
+    waitingjobs=10,
+    threads=2,
+    headless=True,
+)
 ```
 
-## Contributing, Reporting Issues and Other Support
+## Contributing, reporting issues, and support
 
-To contribute to PaDELPy, make a pull request. Contributions should include tests for new features added, as well as extensive documentation.
+To contribute, open a pull request. New features should include tests and clear
+documentation.
 
-To report problems with the software or feature requests, file an issue. When reporting problems, include information such as error messages, your OS/environment and Python version.
+To report bugs or request features, file a GitHub issue. Include error messages,
+operating system, Java version (`java -version`), and Python version when
+reporting problems.
 
-For additional support/questions, contact Travis Kessler (Travis_Kessler@student.uml.edu).
+For additional questions, contact Travis Kessler
+([travis.j.kessler@gmail.com](mailto:travis.j.kessler@gmail.com)).
