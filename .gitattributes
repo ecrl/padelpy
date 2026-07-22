@@ -1,0 +1,4 @@
+# Keep vendored PaDEL artifacts byte-identical across platforms (no CRLF
+# conversion). Integrity digests in docs/security/vendored-artifacts.sha256
+# assume the blob as stored in git.
+src/padelpy/PaDEL-Descriptor/** -text
