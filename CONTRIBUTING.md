@@ -89,9 +89,9 @@ when reporting runtime failures.
 - Third-party notices for the bundled PaDEL/CDK tree are summarized in
   [NOTICE](NOTICE); full license texts remain under
   `src/padelpy/PaDEL-Descriptor/license/`.
-- Coverage uploads to Codecov from the Ubuntu Python 3.12 CI leg when the
-  repository secret `CODECOV_TOKEN` is configured (optional until Codecov org
-  access is finalized).
+- Coverage uploads to Codecov from the Ubuntu Python 3.12 CI leg via GitHub
+  Actions OIDC (`use_oidc: true`) and the Codecov GitHub App installed on
+  `ecrl` (no `CODECOV_TOKEN` required).
 
 ## Publishing releases (maintainers)
 

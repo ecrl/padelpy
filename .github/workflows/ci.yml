@@ -90,6 +90,10 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    # OIDC upload to Codecov via the installed GitHub App (no CODECOV_TOKEN).
+    permissions:
+      contents: read
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -131,11 +135,9 @@ jobs:
           files: coverage.xml
           flags: ubuntu
           name: ubuntu-py3.12
-          # Set repository secret CODECOV_TOKEN (Codecov → repo → settings).
-          # Keep false until the token exists so PRs are not blocked.
+          use_oidc: true
+          # Keep false until OIDC uploads are confirmed green.
           fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   smoke:
     name: smoke (${{ matrix.os }})
