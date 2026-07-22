@@ -16,11 +16,17 @@ within the compatibility policy described in [API_STABILITY.md](API_STABILITY.md
   (`docs/security/vendored-artifacts.sha256`) and an expanded threat model in
   `SECURITY.md`
 - GitHub private vulnerability reporting documented alongside email disclosure
+- Root `NOTICE` summarizing redistributed PaDEL/CDK third-party licenses
+- Windows and macOS CI smoke jobs; CodeQL workflow; Codecov upload from the
+  Ubuntu Python 3.12 test leg
+- Broader pre-commit hooks (whitespace, YAML, large-file checks) and a CI
+  `pre-commit` job
 
 ### Changed
 
 - PyPI publish workflow pins `pypa/gh-action-pypi-publish` to a full commit SHA
-  (v1.14.1)
+  (v1.14.1) and runs the test suite before uploading
+- CI uses concurrency groups and pip caching; README links live Read the Docs
 
 ## [0.1.17] - 2026-07-22
 

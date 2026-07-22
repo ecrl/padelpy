@@ -1,10 +1,10 @@
 # PaDELPy: API-stable modernization of a Python wrapper for PaDEL-Descriptor
 
-**Design Document — v0.1**  
-**Status:** Approved (2026-07-21)  
-**Package:** `padelpy` (PyPI / import name unchanged)  
-**License:** MIT (unchanged)  
-**Current release baseline:** `0.1.16` (2023-11-10)  
+**Design Document — v0.1**
+**Status:** Approved (2026-07-21)
+**Package:** `padelpy` (PyPI / import name unchanged)
+**License:** MIT (unchanged)
+**Current release baseline:** `0.1.16` (2023-11-10)
 **Modernization release tag:** `0.1.17` (after Phases A–E complete)
 
 ---
@@ -245,29 +245,29 @@ Descriptor values remain **strings as returned by PaDEL CSV** unless tests today
 
 ### 9.1 `padelpy` (`__init__.py`)
 
-**Purpose:** Re-export the public API and `__version__`.  
+**Purpose:** Re-export the public API and `__version__`.
 **Changes:** Explicit `__all__`; version from `importlib.metadata` (with a safe editable-install fallback if needed).
 
 ### 9.2 `padelpy.functions`
 
-**Purpose:** High-level SMILES/MDL/SDF convenience wrappers.  
-**Key behaviors to preserve:** three-attempt retry on `RuntimeError`; `maxruntime` seconds→milliseconds conversion; removal of `Name` column; list vs single return for SMILES.  
+**Purpose:** High-level SMILES/MDL/SDF convenience wrappers.
+**Key behaviors to preserve:** three-attempt retry on `RuntimeError`; `maxruntime` seconds→milliseconds conversion; removal of `Name` column; list vs single return for SMILES.
 **Internal improvements (Phase C):** tempfile-based `.smi`/`.csv` paths; robust cleanup on success and failure; encoding strategy for CSV reads (try UTF-8, fall back with a clear error).
 
 ### 9.3 `padelpy.wrapper`
 
-**Purpose:** Build and run the PaDEL CLI.  
-**Key behaviors to preserve:** flag mapping to CLI switches; `headless` default `True`; `retainorder` default `True`.  
+**Purpose:** Build and run the PaDEL CLI.
+**Key behaviors to preserve:** flag mapping to CLI switches; `headless` default `True`; `retainorder` default `True`.
 **Internal improvements (Phase C):** argv list (no `command.split()`); `subprocess.run` / `Popen.communicate(timeout=...)` instead of busy-wait; preserve timeout error as `RuntimeError` with a stable message prefix where tests lock it.
 
 ### 9.4 `padelpy.version` (or inline version)
 
-**Purpose:** Version string.  
+**Purpose:** Version string.
 **Change:** Remove `pkg_resources`; prefer single source of truth in `pyproject.toml` via `importlib.metadata.version("padelpy")`.
 
 ### 9.5 Vendored `padelpy/PaDEL-Descriptor/`
 
-**Purpose:** Ship the Java engine and licenses.  
+**Purpose:** Ship the Java engine and licenses.
 **Rule:** Treat as an opaque binary blob for Phases A–E. Do not upgrade JARs without a separate approved plan and parity corpus. Keep license files intact; document third-party licenses in user-facing docs.
 
 ---

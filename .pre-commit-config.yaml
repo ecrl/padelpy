@@ -1,4 +1,16 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^src/padelpy/PaDEL-Descriptor/
+      - id: end-of-file-fixer
+        exclude: ^src/padelpy/PaDEL-Descriptor/
+      - id: check-yaml
+      - id: check-added-large-files
+        # Vendored PaDEL tree includes multi-MB artifacts; allow intentional adds.
+        args: [--maxkb=25000]
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.10
     hooks:

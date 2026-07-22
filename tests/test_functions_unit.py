@@ -12,14 +12,16 @@ from padelpy import from_mdl, from_sdf, from_smiles
 
 
 def _write_csv(path: str, rows: list[dict[str, str]]) -> None:
+    # Always UTF-8: Windows default encodings (e.g. cp1252) would corrupt
+    # non-ASCII PaDEL CSV fixtures and break UTF-8 reader contracts.
     if not rows:
-        Path(path).write_text("Name,MW,nC\n")
+        Path(path).write_text("Name,MW,nC\n", encoding="utf-8")
         return
     headers = list(rows[0].keys())
     lines = [",".join(headers)]
     for row in rows:
         lines.append(",".join(row[h] for h in headers))
-    Path(path).write_text("\n".join(lines) + "\n")
+    Path(path).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _padel_writes_rows(rows: list[dict[str, str]]):

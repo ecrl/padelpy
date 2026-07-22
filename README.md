@@ -4,6 +4,9 @@
 
 [![GitHub version](https://badge.fury.io/gh/ecrl%2Fpadelpy.svg)](https://badge.fury.io/gh/ecrl%2Fpadelpy)
 [![PyPI version](https://badge.fury.io/py/padelpy.svg)](https://badge.fury.io/py/padelpy)
+[![Documentation Status](https://readthedocs.org/projects/padelpy/badge/?version=latest)](https://padelpy.readthedocs.io/en/latest/)
+[![CI](https://github.com/ecrl/padelpy/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ecrl/padelpy/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/ecrl/padelpy/branch/master/graph/badge.svg)](https://codecov.io/gh/ecrl/padelpy)
 [![GitHub license](https://img.shields.io/github/license/ecrl/padelpy)](https://github.com/ecrl/padelpy/blob/master/LICENSE)
 
 PaDELPy provides a Python wrapper for the
@@ -11,6 +14,8 @@ PaDELPy provides a Python wrapper for the
 descriptor calculation software. It exposes the PaDEL-Descriptor command-line
 interface to Python for computing descriptors and fingerprints from SMILES,
 MDL MolFiles, and SDF files.
+
+Documentation: https://padelpy.readthedocs.io/
 
 ## Installation
 
